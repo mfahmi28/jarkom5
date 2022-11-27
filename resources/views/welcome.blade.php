@@ -8,6 +8,7 @@
 
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/materialdesignicons.min.css') }}">
 
     </head>
     <body class="font-nunito">
@@ -83,6 +84,8 @@
                 </div>
             </div>
         </div>
+
+        <i class="mdi mdi-receipt" aria-hidden="true"></i>
     </body>
 
     <script src="{{ asset('js/app.js') }}"></script>
