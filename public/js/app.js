@@ -19437,8 +19437,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\SOFTWARE\XAMPP PHP 7.3.27\htdocs\sistem-po-barang\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\SOFTWARE\XAMPP PHP 7.3.27\htdocs\sistem-po-barang\resources\css\app.css */"./resources/css/app.css");
+__webpack_require__(/*! D:\SOFTWARE\XAMPP PHP 7.3.27\htdocs\sistem-pemesanan-barang\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\SOFTWARE\XAMPP PHP 7.3.27\htdocs\sistem-pemesanan-barang\resources\css\app.css */"./resources/css/app.css");
 
 
 /***/ })
