@@ -17,7 +17,7 @@
         </style>
     </head>
     <body class="font-nunito bg-indigo-50">
-        <div class="px-40 bg-white py-3 shadow-md flex flex-row">
+        <div class="px-40 bg-white py-3 shadow-md flex flex-row sticky top-0 z-10">
             <div class="flex">
                 <div><i class="mdi mdi-account-circle text-4xl text-primary"></i></div>
                 <div class="flex flex-col ml-3">
@@ -30,12 +30,30 @@
             </div>
         </div>
         
-        <div class="mx-40 mt-24">
+        <div class="mx-40 my-10">
             @yield('content')
+        </div>
+
+        <div id="loadingScreen" class="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 hidden" style="z-index: 9999;">
+            <div class="m-auto w-12 h-12 rounded-full border-4 border-gray-300 animate-spin" style="border-top-color: #3C5AC2;"></div>
         </div>
     </body>
 
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/jquery-3.6.1.min.js') }}"></script>
     <script src="{{ asset('js/flowbite.js') }}"></script>
+
+    <script>
+        const showLoadingScreen = (isShow=false) => {
+            if(isShow) {
+                $('#loadingScreen').addClass('flex')
+                $('#loadingScreen').removeClass('hidden')
+            } else {
+                $('#loadingScreen').removeClass('flex')
+                $('#loadingScreen').addClass('hidden')
+            }
+        }
+    </script>
+
+    @yield('javascript')
 </html>
