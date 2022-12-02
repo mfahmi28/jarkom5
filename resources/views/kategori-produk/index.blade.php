@@ -1,14 +1,16 @@
 @extends('layouts.page')
 
 @section('content')
-    <div class="flex">
+    <div class="flex items-center justify-between">
         <div class="flex cursor-pointer">
-            <a href="/cms/beranda" class="flex">
-                <i class="mdi mdi-arrow-left text-4xl my-auto mr-3"></i> <span class="font-semibold text-2xl my-auto">Kategori Produk</span>
+            <a href="/beranda" class="flex items-center">
+                <i class="mdi mdi-arrow-left text-4xl mr-3"></i>
+                <span class="font-semibold text-2xl">Kategori Produk</span>
             </a>
         </div>
-        <div class="flex cursor-pointer ml-auto">
-            <i class="mdi mdi-plus text-lg mr-2 my-auto"></i> <span class="text-lg my-auto font-semibold" data-modal-toggle="addModal">Tambah Kategori</span>
+        <div class="flex items-center cursor-pointer">
+            <i class="mdi mdi-plus text-lg mr-2"></i>
+            <span class="text-lg font-semibold" data-modal-toggle="addModal">Tambah Kategori</span>
         </div>
     </div>
     <div class="mt-8 rounded-xl relative overflow-x-auto shadow-sm">

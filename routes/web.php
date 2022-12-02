@@ -22,12 +22,18 @@ Route::get('/login', function() {
     return view('login');
 });
 
-Route::get('/cms/beranda', function() {
+Route::get('/beranda', function() {
     return view('beranda.index');
 });
 
-Route::get('/cms/kategori-produk', [KategoriProdukController::class, 'index']);
-Route::get('/cms/kategori-produk/detail', [KategoriProdukController::class, 'getKategoriDetail']);
-Route::post('/cms/kategori-produk', [KategoriProdukController::class, 'addKategori']);
-Route::put('/cms/kategori-produk', [KategoriProdukController::class, 'editKategori']);
-Route::delete('/cms/kategori-produk', [KategoriProdukController::class, 'deleteKategori']);
+Route::get('/cabang', function() {
+    return view('cabang.index');
+});
+
+Route::get('/kategori-produk', [KategoriProdukController::class, 'index']);
+Route::get('/kategori-produk/detail', [KategoriProdukController::class, 'getKategoriDetail']);
+Route::post('/kategori-produk', [KategoriProdukController::class, 'addKategori']);
+Route::put('/kategori-produk', [KategoriProdukController::class, 'editKategori']);
+Route::delete('/kategori-produk', [KategoriProdukController::class, 'deleteKategori']);
+
+// Route::get('/cabang', [CabangController::class, 'index']);
