@@ -129,7 +129,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/cms/kategori-produk',
+                url: '/kategori-produk',
                 data: {
                     _token: '{{ csrf_token() }}',
                     nama: nama,
@@ -159,7 +159,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/cms/kategori-produk/detail',
+                url: '/kategori-produk/detail',
                 data: {
                     kategori_id: kategoriId
                 },
@@ -194,7 +194,7 @@
 
             $.ajax({
                 type: 'PUT',
-                url: '/cms/kategori-produk',
+                url: '/kategori-produk',
                 data: {
                     _token: '{{ csrf_token() }}',
                     kategori_id: kategoriId,
@@ -224,7 +224,7 @@
     
                 $.ajax({
                     type: 'DELETE',
-                    url: '/cms/kategori-produk',
+                    url: '/kategori-produk',
                     data: {
                         _token: '{{ csrf_token() }}',
                         kategori_id: kategoriId

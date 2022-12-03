@@ -33,7 +33,7 @@
                         <input type="password" placeholder="Password" class="text-base w-full py-3 px-5 border-2 border-gray-300 rounded-md focus:border-secondary">
                     </div>
                     <div>
-                        <button class="text-2xl text-white rounded-md bg-primary w-full py-2 font-bold hover:opacity-75">
+                        <button class="text-2xl text-white rounded-md bg-primary w-full py-2 font-bold hover:opacity-75" onclick="goToMenu('/beranda')">
                             Login
                         </button>
                     </div>
@@ -48,4 +48,9 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/jquery-3.6.1.min.js') }}"></script>
     <script src="{{ asset('js/flowbite.js') }}"></script>
+    <script>
+        const goToMenu = (url) => {
+            location.href = url
+        }
+    </script>
 </html>
