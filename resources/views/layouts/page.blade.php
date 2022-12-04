@@ -15,8 +15,10 @@
                 min-height: 100vh;
             }
         </style>
+
+        @yield('style')
     </head>
-    <body class="font-nunito bg-indigo-50">
+    <body class="font-nunito bg-purple-50">
         <div class="px-40 bg-white py-3 shadow-md flex flex-row sticky top-0 z-10">
             <div class="flex">
                 <div><i class="mdi mdi-account-circle text-4xl text-primary"></i></div>

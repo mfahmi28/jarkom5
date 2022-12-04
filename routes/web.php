@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriProdukController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\ProdukController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,3 +46,9 @@ Route::get('/supplier/detail', [SupplierController::class, 'getSupplierDetail'])
 Route::post('/supplier', [SupplierController::class, 'addSupplier']);
 Route::put('/supplier', [SupplierController::class, 'editSupplier']);
 Route::delete('/supplier', [SupplierController::class, 'deleteSupplier']);
+
+Route::get('/produk', [ProdukController::class, 'index']);
+Route::get('/produk/detail', [ProdukController::class, 'getProdukDetail']);
+Route::post('/produk', [ProdukController::class, 'addProduk']);
+Route::put('/produk', [ProdukController::class, 'editProduk']);
+Route::delete('/produk', [ProdukController::class, 'deleteProduk']);

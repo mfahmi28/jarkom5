@@ -17,30 +17,32 @@
         </style>
     </head>
     <body class="font-nunito">
-        <div class="flex h-screen w-screen">
-            <div class="w-6/12 flex">
-                <div class="m-auto w-96">
-                    <div class="mb-3">
-                        <span class="text-4xl text-secondary font-extrabold">SI SABAR</span>
-                    </div>
-                    <div class="mb-12">
-                        <span class="text-xl text-gray-600">Selamat datang! Gunakan akun Anda untuk masuk</span>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" placeholder="Username" class="text-base w-full py-3 px-5 border-2 border-gray-300 rounded-md focus:border-secondary">
-                    </div>
-                    <div class="mb-8">
-                        <input type="password" placeholder="Password" class="text-base w-full py-3 px-5 border-2 border-gray-300 rounded-md focus:border-secondary">
-                    </div>
-                    <div>
-                        <button class="text-2xl text-white rounded-md bg-primary w-full py-2 font-bold hover:opacity-75" onclick="goToMenu('/beranda')">
-                            Login
-                        </button>
+        <div class="flex h-screen w-screen bg-purple-50">
+            <div class="flex m-auto rounded-3xl relative overflow-x-auto shadow-lg">
+                <div class="w-6/12 flex p-16 bg-white">
+                    <div class="m-auto w-96">
+                        <div class="mb-3">
+                            <span class="text-4xl text-primary font-extrabold">SI SABAR</span>
+                        </div>
+                        <div class="mb-12">
+                            <span class="text-xl text-gray-600">Selamat datang! Gunakan akun Anda untuk masuk</span>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" placeholder="Username" class="text-base w-full py-3 px-5 border-2 border-gray-300 rounded-md focus:border-secondary">
+                        </div>
+                        <div class="mb-8">
+                            <input type="password" placeholder="Password" class="text-base w-full py-3 px-5 border-2 border-gray-300 rounded-md focus:border-secondary">
+                        </div>
+                        <div>
+                            <button class="text-2xl text-white rounded-md bg-primary w-full py-2 font-bold hover:opacity-75" onclick="goToMenu('/beranda')">
+                                Login
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="w-6/12 flex bg-secondary">
-                <img src="{{ asset('/images/illustrations/people-with-computer.svg') }}" width="444px" class="m-auto">
+                <div class="w-6/12 flex p-16 bg-secondary">
+                    <img src="{{ asset('/images/illustrations/people-with-goods.svg') }}" width="364px" class="m-auto">
+                </div>
             </div>
         </div>
     </body>
