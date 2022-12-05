@@ -23,15 +23,15 @@
             <div class="flex">
                 <div><i class="mdi mdi-account-circle text-4xl text-primary"></i></div>
                 <div class="flex flex-col ml-3">
-                    <span class="text-base font-bold">Wahyu Rifaldi</span>
-                    <span class="text-sm text-gray-400">Admin</span>
+                    <span class="text-base font-bold">{{ \Auth::user()->name }}</span>
+                    <span class="text-sm text-gray-400">{{ \Auth::user()->role->name }}</span>
                 </div>
             </div>
             <div class="ml-auto flex">
                 <i class="mdi mdi-dots-vertical text-3xl text-gray-600 my-auto"></i>
             </div>
         </div>
-        
+
         <div class="mx-40 my-10">
             @yield('content')
         </div>
