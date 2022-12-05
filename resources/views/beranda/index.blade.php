@@ -22,10 +22,12 @@
             <i class="mdi mdi-home-assistant text-purple-100 text-6xl my-auto"></i>
             <span class="text-3xl text-white font-bold my-auto ml-6">Cabang</span>
         </div>
-        <div class="py-6 px-12 rounded-lg bg-secondary flex flex-row hover:opacity-75 cursor-pointer">
+        @role("admin")
+        <div class="py-6 px-12 rounded-lg bg-secondary flex flex-row hover:opacity-75 cursor-pointer" onclick="goToMenu('/pengguna')">
             <i class="mdi mdi-account-box text-purple-100 text-6xl my-auto"></i>
             <span class="text-3xl text-white font-bold my-auto ml-6">Pengguna</span>
         </div>
+        @endrole
         <div class="py-6 px-12 rounded-lg bg-secondary flex flex-row hover:opacity-75 cursor-pointer">
             <i class="mdi mdi-receipt text-purple-100 text-6xl my-auto"></i>
             <span class="text-3xl text-white font-bold my-auto ml-6">Pengajuan</span>

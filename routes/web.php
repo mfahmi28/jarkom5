@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 use App\Http\Controllers\KategoriProdukController;
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ProdukController;
 
@@ -35,6 +36,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/beranda', function() {
         return view('beranda.index');
+    });
+
+    Route::prefix('pengguna')->middleware(['role:admin'])->group(function () {
+        Route::get('/', [PenggunaController::class, 'index']);
+        Route::post('/', [PenggunaController::class, 'addUser']);
+        Route::put('/', [PenggunaController::class, 'editUser']);
+        Route::delete('/', [PenggunaController::class, 'deleteUser']);
+        Route::get('/detail', [PenggunaController::class, 'getUserDetail']);
     });
 
     Route::get('/kategori-produk', [KategoriProdukController::class, 'index']);
