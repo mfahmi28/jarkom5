@@ -38,6 +38,10 @@ Route::middleware('auth')->group(function () {
         return view('beranda.index');
     });
 
+    Route::get('/transaksi', function() {
+        return view('transaksi.index');
+    });
+
     Route::prefix('pengguna')->middleware(['role:admin'])->group(function () {
         Route::get('/', [PenggunaController::class, 'index']);
         Route::post('/', [PenggunaController::class, 'addUser']);

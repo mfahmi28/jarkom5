@@ -10,7 +10,7 @@
             <i class="mdi mdi-account-group text-purple-100 text-6xl my-auto"></i>
             <span class="text-3xl text-white font-bold my-auto ml-6">Supplier</span>
         </div>
-        <div class="py-6 px-12 rounded-lg bg-secondary flex flex-row hover:opacity-75 cursor-pointer">
+        <div class="py-6 px-12 rounded-lg bg-secondary flex flex-row hover:opacity-75 cursor-pointer" onclick="goToMenu('/transaksi')">
             <i class="mdi mdi-clipboard-text text-purple-100 text-6xl my-auto"></i>
             <span class="text-3xl text-white font-bold my-auto ml-6">Transaksi</span>
         </div>
