@@ -42,6 +42,10 @@ Route::middleware('auth')->group(function () {
         return view('transaksi.index');
     });
 
+    Route::get('/pengajuan', function() {
+        return view('pengajuan.index');
+    });
+
     Route::prefix('pengguna')->middleware(['role:admin'])->group(function () {
         Route::get('/', [PenggunaController::class, 'index']);
         Route::post('/', [PenggunaController::class, 'addUser']);
