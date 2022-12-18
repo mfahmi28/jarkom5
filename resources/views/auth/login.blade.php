@@ -17,17 +17,17 @@
         </style>
     </head>
     <body class="font-nunito">
-        <div class="flex h-screen w-screen bg-purple-50">
+        <div class="flex h-screen w-screen bg-purple-50 md:px-0 px-3">
             <div class="flex m-auto rounded-3xl relative overflow-x-auto shadow-lg">
-                <div class="w-6/12 flex p-16 bg-white">
+                <div class="md:w-6/12 w-full flex md:p-16 p-6 bg-white">
                     <div class="m-auto w-96">
                         <form action="{{ route('login') }}" method="post">
                             @csrf
                             <div class="mb-3">
-                                <span class="text-4xl text-primary font-extrabold">SI SABAR</span>
+                                <span class="md:text-4xl text-2xl text-primary font-extrabold">SI SABAR</span>
                             </div>
                             <div class="mb-12">
-                                <span class="text-xl text-gray-600">Selamat datang! Gunakan akun Anda untuk masuk</span>
+                                <span class="md:text-xl text-lg text-gray-600">Selamat datang! Gunakan akun Anda untuk masuk</span>
                             </div>
                             @if ($errors)
                             <div class="mb-3">
@@ -50,10 +50,9 @@
                                 </button>
                             </div>
                         </form>
-
                     </div>
                 </div>
-                <div class="w-6/12 flex p-16 bg-secondary">
+                <div class="w-6/12 md:flex hidden p-16 bg-secondary">
                     <img src="{{ asset('/images/illustrations/people-with-goods.svg') }}" width="364px" class="m-auto">
                 </div>
             </div>

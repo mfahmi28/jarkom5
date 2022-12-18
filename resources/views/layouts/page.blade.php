@@ -19,7 +19,7 @@
         @yield('style')
     </head>
     <body class="font-nunito bg-purple-50">
-        <div class="px-40 bg-white py-3 shadow-md flex flex-row sticky top-0 z-10">
+        <div class="md:px-40 px-3 bg-white py-3 shadow-md flex flex-row sticky top-0 z-10">
             <div class="flex">
                 <div><i class="mdi mdi-account-circle text-4xl text-primary"></i></div>
                 <div class="flex flex-col ml-3">
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <div class="mx-40 my-10">
+        <div class="md:mx-40 mx-3 my-10">
             @yield('content')
         </div>
 
