@@ -70,10 +70,10 @@
                 <div class="p-6 space-y-6">
                     <div class="mb-6">
                         <label class="text-sm font-semibold mb-3">Supplier<span class="text-red-600">*</span></label>
-                        <select class="supplier-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0">
+                        <select class="supplier-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" {{ !empty(Auth::user()->supplier_id) ? 'disabled' : '' }}>
                             <option value="" selected disabled>-</option>
                             @foreach($supplierList as $supplier)
-                            <option value="{{ $supplier->id }}">[{{ $supplier->kode }}] {{ $supplier->nama }}</option>
+                            <option value="{{ $supplier->id }}" {{ $supplier->id == Auth::user()->supplier_id ? 'selected' : '' }}>[{{ $supplier->kode }}] {{ $supplier->nama }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -131,7 +131,7 @@
                     <input type="hidden" class="produk-id">
                     <div class="mb-6">
                         <label class="text-sm font-semibold mb-3">Supplier<span class="text-red-600">*</span></label>
-                        <select class="supplier-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0">
+                        <select class="supplier-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" {{ !empty(Auth::user()->supplier_id) ? 'disabled' : '' }}>
                             <option value="" selected disabled>-</option>
                             @foreach($supplierList as $supplier)
                             <option value="{{ $supplier->id }}">[{{ $supplier->kode }}] {{ $supplier->nama }}</option>

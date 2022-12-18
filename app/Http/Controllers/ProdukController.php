@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Models\Produk;
 use App\Models\Supplier;
 use App\Models\KategoriProduk;
@@ -11,6 +12,8 @@ class ProdukController extends Controller
 {
     public function index()
     {
+        $userSupplierId = Auth::user()->supplier_id;
+
         $supplierList = Supplier::select('id', 'kode', 'nama')
             ->orderby('nama', 'ASC')
             ->get();
@@ -28,6 +31,9 @@ class ProdukController extends Controller
                 'produk.harga_per_qty',
                 'produk.satuan'
             ])
+            ->when(!empty($userSupplierId), function($query) use($userSupplierId) {
+                $query->where('supplier_id', $userSupplierId);
+            })
             ->leftJoin('suppliers', 'suppliers.id', 'produk.supplier_id')
             ->leftJoin('kategori_produk', 'kategori_produk.id', 'produk.kategori_produk_id')
             ->orderBy('produk.updated_at', 'DESC')
