@@ -9,6 +9,7 @@ use App\Http\Controllers\CabangController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\PengajuanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,10 +43,6 @@ Route::middleware('auth')->group(function () {
         return view('transaksi.index');
     });
 
-    Route::get('/pengajuan', function() {
-        return view('pengajuan.index');
-    });
-
     Route::prefix('pengguna')->middleware(['role:admin'])->group(function () {
         Route::get('/', [PenggunaController::class, 'index']);
         Route::post('/', [PenggunaController::class, 'addUser']);
@@ -77,4 +74,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/produk', [ProdukController::class, 'addProduk']);
     Route::put('/produk', [ProdukController::class, 'editProduk']);
     Route::delete('/produk', [ProdukController::class, 'deleteProduk']);
+
+    Route::get('/pengajuan', [PengajuanController::class, 'index']);
+    Route::get('/pengajuan/detail', [PengajuanController::class, 'getPengajuanDetail']);
+    Route::post('/pengajuan', [PengajuanController::class, 'addPengajuan']);
+    Route::put('/pengajuan/status/update', [PengajuanController::class, 'confirmPengajuan']);
+    Route::delete('/pengajuan', [PengajuanController::class, 'deletePengajuan']);
 });
