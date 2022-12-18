@@ -1,5 +1,5 @@
 <!-- EDIT MODAL -->
-<div id="editModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+<div id="editModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full modal">
     <div class="relative w-full max-w-2xl h-full md:h-auto">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex justify-between items-start p-4 rounded-t border-b dark:border-gray-600">
@@ -19,7 +19,7 @@
                 </div>
                 <div class="mb-6">
                     <label class="text-sm font-semibold mb-3">Username<span class="text-red-600">*</span></label>
-                    <input type="text" class="username w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan email">
+                    <input type="text" class="username w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan username">
                 </div>
                 <div class="mb-6">
                     <label class="text-sm font-semibold mb-3">Email<span class="text-red-600">*</span></label>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="mb-6">
                     <label class="text-sm font-semibold mb-3">Password<span class="text-red-600">*</span></label>
-                    <input type="password" class="password w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan email">
+                    <input type="password" class="password w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan password">
                 </div>
                 <div class="mb-6">
                     <label class="text-sm font-semibold mb-3">Role<span class="text-red-600">*</span></label>
@@ -35,6 +35,24 @@
                         <option value="" selected disabled>-</option>
                         @foreach($roles as $role)
                         <option value="{{ $role->id }}">{{ $role->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="cabang-field hidden mb-6">
+                    <label class="text-sm font-semibold mb-3">Cabang<span class="text-red-600">*</span></label>
+                    <select class="cabang-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0">
+                        <option value="" selected disabled>-</option>
+                        @foreach($cabangList as $cabang)
+                        <option value="{{ $cabang->id }}">{{ $cabang->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="supplier-field hidden mb-6">
+                    <label class="text-sm font-semibold mb-3">Supplier<span class="text-red-600">*</span></label>
+                    <select class="supplier-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0">
+                        <option value="" selected disabled>-</option>
+                        @foreach($supplierList as $supplier)
+                        <option value="{{ $supplier->id }}">{{ $supplier->nama }}</option>
                         @endforeach
                     </select>
                 </div>

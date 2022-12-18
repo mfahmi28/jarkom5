@@ -29,6 +29,11 @@ class RoleSeeder extends Seeder
                 "id" => 3,
                 "name" => "Supplier",
                 "slug" => "supplier",
+            ],
+            [
+                "id" => 4,
+                "name" => "Admin Cabang",
+                "slug" => "admin-cabang",
             ]
         ];
 

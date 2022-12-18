@@ -19,6 +19,7 @@
                 <tr>
                     <th class="py-4 px-6">Nama</th>
                     <th class="py-4 px-6">Role</th>
+                    <th class="py-4 px-6">Bertugas Di</th>
                     <th class="py-4 px-6 text-center" width="150px">Aksi</th>
                 </tr>
             </thead>
@@ -28,6 +29,15 @@
                     <tr class="{{ $idx%2 ? 'bg-purple-100' : 'bg-white' }}">
                         <td class="py-4 px-6">{{ $user->name }}</td>
                         <td class="py-4 px-6">{{ $user->role->name }}</td>
+                        <td class="py-4 px-6">
+                            @if($user->role_id == 3)
+                                {{ $user->supplier->nama ?? '-' }}
+                            @elseif($user->role_id == 4)
+                                {{ $user->cabang->nama ?? '-' }}
+                            @else
+                                -
+                            @endif
+                        </td>
                         <td class="py-4 px-6 text-center">
                             <i class="mdi mdi-pencil text-lg cursor-pointer hover:opacity-75 text-yellow-300 mr-5" onclick="showPenggunaDetail('{{ $user->id }}')"></i>
                             <i class="mdi mdi-delete text-lg cursor-pointer hover:opacity-75 text-red-600" onclick="deleteUser('{{ $user->id }}')"></i>
@@ -67,7 +77,9 @@
                 username = modal.find('.username').val(),
                 email = modal.find('.email').val(),
                 password = modal.find('.password').val(),
-                role_id = modal.find('.role-id').val();
+                role_id = modal.find('.role-id').val(),
+                supplier_id = modal.find('.supplier-id').val() ?? '',
+                cabang_id = modal.find('.cabang-id').val() ?? ''
 
             showLoadingScreen(true)
 
@@ -80,7 +92,9 @@
                     username,
                     email,
                     password,
-                    role_id
+                    role_id,
+                    supplier_id,
+                    cabang_id
                 },
                 success: function(response) {
                     showLoadingScreen(false)
@@ -118,8 +132,10 @@
                         modal.find('.nama').val(response.user_detail.name)
                         modal.find('.username').val(response.user_detail.username)
                         modal.find('.email').val(response.user_detail.email)
-                        modal.find('.password').val("")
-                        modal.find('.role-id').val(response.user_detail.role_id)
+                        modal.find('.password').val('')
+                        modal.find('.role-id').val(response.user_detail.role_id).change()
+                        modal.find('.cabang-id').val(response.user_detail.cabang_id ?? '')
+                        modal.find('.supplier-id').val(response.user_detail.supplier_id ?? '')
 
                         editModal.show()
                     } else {
@@ -141,8 +157,9 @@
                 username = modal.find('.username').val(),
                 email = modal.find('.email').val(),
                 password = modal.find('.password').val(),
-                role_id = modal.find('.role-id').val();
-
+                role_id = modal.find('.role-id').val(),
+                cabang_id = modal.find('.cabang-id').val(),
+                supplier_id = modal.find('.supplier-id').val()
 
             showLoadingScreen(true)
 
@@ -156,7 +173,9 @@
                     username,
                     email,
                     password,
-                    role_id
+                    role_id,
+                    cabang_id,
+                    supplier_id
                 },
                 success: function(response) {
                     showLoadingScreen(false)
@@ -203,5 +222,24 @@
                 })
             }
         }
+
+        $(document).on('change', '.role-id', function() {
+            let roleId = $(this).val()
+
+            $(this).closest('.modal').find('.supplier-id').val('')
+            $(this).closest('.modal').find('.cabang-id').val('')
+
+            if(roleId == 3) {
+                $(this).closest('.modal').find('.supplier-field').removeClass('hidden')
+            } else {
+                $(this).closest('.modal').find('.supplier-field').addClass('hidden')
+            }
+
+            if(roleId == 4) {
+                $(this).closest('.modal').find('.cabang-field').removeClass('hidden')
+            } else {
+                $(this).closest('.modal').find('.cabang-field').addClass('hidden')
+            }
+        })
     </script>
 @endsection

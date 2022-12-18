@@ -6,6 +6,7 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Models\Supplier;
 use App\Models\User;
+use App\Models\Cabang;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,13 +18,12 @@ class PenggunaController extends Controller
      **/
     public function index()
     {
-        $users = User::query()
-            ->orderBy('updated_at', 'DESC')
-            ->paginate(10);
-
+        $users = User::query()->orderBy('updated_at', 'DESC')->paginate(10);
         $roles = Role::all();
+        $supplierList = Supplier::all();
+        $cabangList = Cabang::all();
 
-        return view('pengguna.index', compact('users', 'roles'));
+        return view('pengguna.index', compact('users', 'roles', 'supplierList', 'cabangList'));
     }
 
     public function getUserDetail(Request $request)
@@ -50,13 +50,21 @@ class PenggunaController extends Controller
 
     public function addUser(Request $request)
     {
-        $request->validate([
+        $validates = [
             'name' => 'required',
             'email' => 'required|email',
             'username' => 'required|alpha_num',
             'password' => 'required|alpha_num',
             'role_id' => 'required|exists:roles,id'
-        ]);
+        ];
+
+        if($request->role_id == 3) {
+            $validates['supplier_id'] = 'required';
+        } else if($request->role_id == 4) {
+            $validates['cabang_id'] = 'required';
+        }
+
+        $request->validate($validates);
 
         $addUser = User::insert([
                 'name' => $request->name,
@@ -65,6 +73,8 @@ class PenggunaController extends Controller
                 'password' => bcrypt($request->password),
                 'role_id' => $request->role_id,
                 'email_verified_at' => date('Y-m-d H:i:s'),
+                'cabang_id' => !empty($request->cabang_id) ? $request->cabang_id : null,
+                'supplier_id' => !empty($request->supplier_id) ? $request->supplier_id : null,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ]);
@@ -77,31 +87,39 @@ class PenggunaController extends Controller
 
     public function editUser(Request $request)
     {
-        $request->validate([
+        $validates = [
             'name' => 'required',
             'email' => 'required|email',
             'username' => 'required|alpha_num',
             'password' => 'nullable|alpha_num',
             'role_id' => 'required|exists:roles,id',
             'pengguna_id' => 'required|exists:users,id'
-        ]);
+        ];
+
+        if($request->role_id == 3) {
+            $validates['supplier_id'] = 'required';
+        } else if($request->role_id == 4) {
+            $validates['cabang_id'] = 'required';
+        }
+
+        $request->validate($validates);
 
         $updates = [
             'name' => $request->name,
             'email' => $request->email,
             'username' => Str::lower($request->username),
             'role_id' => $request->role_id,
+            'cabang_id' => !empty($request->cabang_id) ? $request->cabang_id : null,
+            'supplier_id' => !empty($request->supplier_id) ? $request->supplier_id : null
         ];
 
         if ($request->password && !empty($request->password)) {
             $updates['password'] = bcrypt($request->password);
         }
 
-        $editUser = User::find($request->pengguna_id)
-            ->update($updates);
+        $editUser = User::find($request->pengguna_id)->update($updates);
 
         return response()->json([
-            $editUser,
             'status' => $editUser ? 'OK' : 'FAIL',
             'message' => $editUser ? 'Berhasil Mengubah Data!' : 'Gagal Mengubah Data!'
         ]);
@@ -120,5 +138,4 @@ class PenggunaController extends Controller
             'message' => $deleteUser ? 'Berhasil Menghapus Data!' : 'Gagal Menghapus Data!'
         ]);
     }
-
 }
