@@ -7,7 +7,7 @@
         <title>Si Sabar - Sistem Pemesanan Barang</title>
 
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('css/materialdesignicons.min.css') }}">
 
         <style>

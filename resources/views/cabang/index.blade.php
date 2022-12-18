@@ -63,7 +63,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 space-y-6">
+                <div class="p-6 space-y-6 modal-form">
                     <div class="mb-6">
                         <label class="text-sm font-semibold mb-3">Kode<span class="text-red-600">*</span></label>
                         <input type="text" class="kode w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan kode">
@@ -102,7 +102,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 space-y-6">
+                <div class="p-6 space-y-6 modal-form">
                     <input type="hidden" class="cabang-id">
                     <div class="mb-6">
                         <label class="text-sm font-semibold mb-3">Kode<span class="text-red-600">*</span></label>
@@ -251,7 +251,7 @@
         const deleteCabang = (cabangId) => {
             if(confirm('Yakin Hapus Data Ini?')) {
                 showLoadingScreen(true)
-    
+
                 $.ajax({
                     type: 'DELETE',
                     url: '/cabang',
@@ -261,7 +261,7 @@
                     },
                     success: function(response) {
                         showLoadingScreen(false)
-    
+
                         if(response.status == 'OK') {
                             location.reload()
                         } else {
@@ -270,7 +270,7 @@
                     },
                     error: function() {
                         showLoadingScreen(false)
-    
+
                         alert('Terjadi Kesalahan! Silahkan Ulangi')
                     }
                 })

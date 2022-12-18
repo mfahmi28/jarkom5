@@ -85,47 +85,49 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 space-y-6">
-                    <div class="mb-6">
-                        <label class="text-sm font-semibold mb-3">Tanggal Pengajuan<span class="text-red-600">*</span></label>
-                        <input type="date" class="tanggal w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih tanggal">
+                <div class="modal-form">
+                    <div class="p-6 space-y-6">
+                        <div class="mb-6">
+                            <label class="text-sm font-semibold mb-3">Tanggal Pengajuan<span class="text-red-600">*</span></label>
+                            <input type="date" class="tanggal w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih tanggal">
+                        </div>
+                        <div class="mb-6">
+                            <label class="text-sm font-semibold mb-3">Cabang<span class="text-red-600">*</span></labellabel>
+                            <select class="cabang-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" {{ !empty(Auth::user()->cabang_id) ? 'disabled' : '' }}>
+                                <option value="" selected disabled>-</option>
+                                @foreach($cabangList as $cabang)
+                                <option value="{{ $cabang->id }}" {{ $cabang->id == Auth::user()->cabang_id ? 'selected' : '' }}>[{{ $cabang->kode }}] {{ $cabang->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-6">
+                            <label class="text-sm font-semibold mb-3">Keterangan</label>
+                            <textarea class="keterangan w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan keterangan" rows="2"></textarea>
+                        </div>
                     </div>
-                    <div class="mb-6">
-                        <label class="text-sm font-semibold mb-3">Cabang<span class="text-red-600">*</span></labellabel>
-                        <select class="cabang-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" {{ !empty(Auth::user()->cabang_id) ? 'disabled' : '' }}>
-                            <option value="" selected disabled>-</option>
-                            @foreach($cabangList as $cabang)
-                            <option value="{{ $cabang->id }}" {{ $cabang->id == Auth::user()->cabang_id ? 'selected' : '' }}>[{{ $cabang->kode }}] {{ $cabang->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-6">
-                        <label class="text-sm font-semibold mb-3">Keterangan</label>
-                        <textarea class="keterangan w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan keterangan" rows="2"></textarea>
-                    </div>
-                </div>
-                <div class="px-6 pb-6">
-                    <label class="text-base font-semibold">Daftar Produk</label>
-                    <hr class="mt-1 mb-4" style="">
-                    <div id="produkFields">
-                        <div id="produkField0" class="grid grid-cols-12 gap-x-4 items-end mb-6">
-                            <div class="col-span-7">
-                                <label class="text-sm font-semibold mb-3">Produk<span class="text-red-600">*</span></label>
-                                <select class="produk-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0">
-                                    <option value="" selected disabled>-</option>
-                                    @foreach($produkList as $produk)
-                                    <option value="{{ $produk->id }}">[{{ $produk->kode }}] {{ $produk->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-span-3">
-                                <label class="text-sm font-semibold mb-3">Qty<span class="text-red-600">*</span></label>
-                                <input type="number" class="qty w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="0">
-                            </div>
-                            <div class="col-span-2">
-                                <button class="bg-green-400 w-full py-1.5 rounded-lg text-2xl text-white cursor-pointer" onclick="addProdukField()">
-                                    <i class="mdi mdi-plus"></i>
-                                </button>
+                    <div class="px-6 pb-6">
+                        <label class="text-base font-semibold">Daftar Produk</label>
+                        <hr class="mt-1 mb-4" style="">
+                        <div id="produkFields">
+                            <div id="produkField0" class="grid grid-cols-12 gap-x-4 items-end mb-6">
+                                <div class="col-span-7">
+                                    <label class="text-sm font-semibold mb-3">Produk<span class="text-red-600">*</span></label>
+                                    <select class="produk-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0">
+                                        <option value="" selected disabled>-</option>
+                                        @foreach($produkList as $produk)
+                                        <option value="{{ $produk->id }}">[{{ $produk->kode }}] {{ $produk->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-span-3">
+                                    <label class="text-sm font-semibold mb-3">Qty<span class="text-red-600">*</span></label>
+                                    <input type="number" class="qty w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="0">
+                                </div>
+                                <div class="col-span-2">
+                                    <button class="bg-green-400 w-full py-1.5 rounded-lg text-2xl text-white cursor-pointer" onclick="addProdukField()">
+                                        <i class="mdi mdi-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -151,7 +153,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6">
+                <div class="p-6 modal-form">
                     <div class="grid grid-cols-12 gap-x-4 gap-y-2">
                         <div class="col-span-4">
                             <label class="text-sm font-bold">Kode Pengajuan</label>
@@ -370,7 +372,7 @@
                                 <i class="mdi mdi-clock text-sm mr-1"></i> PENDING
                             </span>`
                         }
-                        
+
                         modal.find('.kode').html(pengajuanDetail.kode)
                         modal.find('.tanggal').html(pengajuanDetail.tanggal)
                         modal.find('.pengaju').html(pengajuanDetail.user_created)

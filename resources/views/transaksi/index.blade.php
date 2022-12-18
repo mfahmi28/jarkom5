@@ -58,62 +58,64 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 space-y-6">
-                    <div class="mb-6">
-                        <label class="text-sm font-semibold mb-3">Order Number<span class="text-red-600">*</span></label>
-                        <input type="text" class="kode w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan order number">
-                    </div>
-                    <div class="mb-6">
-                        <label class="text-sm font-semibold mb-3">Supplier<span class="text-red-600">*</span></label>
-                        <input type="text" class="nama w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih supplier">
-                    </div>
-                    <div class="mb-6">
-                        <label class="text-sm font-semibold mb-3">Estimasi Tanggal Pengiriman<span class="text-red-600">*</span></label>
-                        <input type="date" class="telepon w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan tanggal">
-                    </div>
-                    <div>
-                        <label class="text-sm font-semibold mb-3">Tujuan Cabang<span class="text-red-600">*</span></label>
-                        <input type="text" class="nama w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih cabang">
-                    </div>
-                    <div>
-                        <label class="text-sm font-semibold mb-3">Keterangan<span class="text-red-600">*</span></label>
-                        <textarea class="alamat w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan keterangan" rows="2"></textarea>
-                    </div>
-                </div>
-                <div class="px-6 pb-6">
-                    <label class="text-sm font-semibold">Daftar Produk</label>
-                    <hr class="border mt-1 mb-4" style="">
-                    <div  class="grid grid-cols-12 gap-x-4 items-end mb-6">
-                        <div class="col-span-7">
-                            <label class="text-sm font-semibold mb-3">Produk<span class="text-red-600">*</span></label>
-                            <input type="text" class="nama w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih produk">
+                <div class="modal-form">
+                    <div class="p-6 space-y-6">
+                        <div class="mb-6">
+                            <label class="text-sm font-semibold mb-3">Order Number<span class="text-red-600">*</span></label>
+                            <input type="text" class="kode w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan order number">
                         </div>
-                        <div class="col-span-3">
-                            <label class="text-sm font-semibold mb-3">Qty<span class="text-red-600">*</span></label>
-                            <input type="text" class="nama w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="0">
+                        <div class="mb-6">
+                            <label class="text-sm font-semibold mb-3">Supplier<span class="text-red-600">*</span></label>
+                            <input type="text" class="nama w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih supplier">
                         </div>
-                        <div class="col-span-2">
-                            <button class="bg-green-400 w-full py-1.5 rounded-lg text-2xl text-white cursor-pointer">+</button>
+                        <div class="mb-6">
+                            <label class="text-sm font-semibold mb-3">Estimasi Tanggal Pengiriman<span class="text-red-600">*</span></label>
+                            <input type="date" class="telepon w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan tanggal">
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold mb-3">Tujuan Cabang<span class="text-red-600">*</span></label>
+                            <input type="text" class="nama w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih cabang">
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold mb-3">Keterangan<span class="text-red-600">*</span></label>
+                            <textarea class="alamat w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan keterangan" rows="2"></textarea>
                         </div>
                     </div>
+                    <div class="px-6 pb-6">
+                        <label class="text-sm font-semibold">Daftar Produk</label>
+                        <hr class="border mt-1 mb-4" style="">
+                        <div  class="grid grid-cols-12 gap-x-4 items-end mb-6">
+                            <div class="col-span-7">
+                                <label class="text-sm font-semibold mb-3">Produk<span class="text-red-600">*</span></label>
+                                <input type="text" class="nama w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih produk">
+                            </div>
+                            <div class="col-span-3">
+                                <label class="text-sm font-semibold mb-3">Qty<span class="text-red-600">*</span></label>
+                                <input type="text" class="nama w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="0">
+                            </div>
+                            <div class="col-span-2">
+                                <button class="bg-green-400 w-full py-1.5 rounded-lg text-2xl text-white cursor-pointer">+</button>
+                            </div>
+                        </div>
 
-                    <div class="bg-purple-100 border border-secondary p-4 rounded-lg">
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="text-sm font-semibold">Total Harga Produk</label>
-                            <div class="text-sm font-semibold">Rp10.000</div>
-                        </div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="text-sm font-semibold">Pajak</label>
-                            <div class="text-sm font-semibold">Rp1.000</div>
-                        </div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="text-sm font-semibold">Sub Total</label>
-                            <div class="text-sm font-semibold">Rp11.000</div>
-                        </div>
-                        <hr class="my-4 border-secondary">
-                        <div class="flex items-center justify-between">
-                            <label class="text-sm font-semibold">Total</label>
-                            <div class="text-sm font-semibold">Rp11.000</div>
+                        <div class="bg-purple-100 border border-secondary p-4 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-sm font-semibold">Total Harga Produk</label>
+                                <div class="text-sm font-semibold">Rp10.000</div>
+                            </div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-sm font-semibold">Pajak</label>
+                                <div class="text-sm font-semibold">Rp1.000</div>
+                            </div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-sm font-semibold">Sub Total</label>
+                                <div class="text-sm font-semibold">Rp11.000</div>
+                            </div>
+                            <hr class="my-4 border-secondary">
+                            <div class="flex items-center justify-between">
+                                <label class="text-sm font-semibold">Total</label>
+                                <div class="text-sm font-semibold">Rp11.000</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -138,7 +140,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6">
+                <div class="p-6 modal-form">
                     <div class="grid grid-cols-12 gap-x-4 gap-y-2">
                         <div class="col-span-5">
                             <label class="text-sm font-bold">Order Number</label>
@@ -234,6 +236,6 @@
 
 @section('javascript')
     <script>
-        
+
     </script>
 @endsection

@@ -11,7 +11,7 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <div class="p-6 space-y-6">
+            <div class="p-6 space-y-6 modal-form">
                 <div class="mb-6">
                     <label class="text-sm font-semibold mb-3">Nama<span class="text-red-600">*</span></label>
                     <input type="text" class="nama w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan nama">

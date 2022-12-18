@@ -67,7 +67,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 space-y-6">
+                <div class="p-6 space-y-6 modal-form">
                     <div class="mb-6">
                         <label class="text-sm font-semibold mb-3">Supplier<span class="text-red-600">*</span></label>
                         <select class="supplier-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" {{ !empty(Auth::user()->supplier_id) ? 'disabled' : '' }}>
@@ -127,7 +127,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 space-y-6">
+                <div class="p-6 space-y-6 modal-form">
                     <input type="hidden" class="produk-id">
                     <div class="mb-6">
                         <label class="text-sm font-semibold mb-3">Supplier<span class="text-red-600">*</span></label>
@@ -307,7 +307,7 @@
         const deleteProduk = (produkId) => {
             if(confirm('Yakin Hapus Data Ini?')) {
                 showLoadingScreen(true)
-    
+
                 $.ajax({
                     type: 'DELETE',
                     url: '/produk',
@@ -317,7 +317,7 @@
                     },
                     success: function(response) {
                         showLoadingScreen(false)
-    
+
                         if(response.status == 'OK') {
                             location.reload()
                         } else {
@@ -326,7 +326,7 @@
                     },
                     error: function() {
                         showLoadingScreen(false)
-    
+
                         alert('Terjadi Kesalahan! Silahkan Ulangi')
                     }
                 })
