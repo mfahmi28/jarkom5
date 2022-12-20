@@ -10,6 +10,7 @@ use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\TransaksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,8 +40,16 @@ Route::middleware('auth')->group(function () {
         return view('beranda.index');
     });
 
-    Route::get('/transaksi', function() {
-        return view('transaksi.index');
+    // Route::get('/transaksi', function() {
+    //     return view('transaksi.index');
+    // });
+
+    Route::prefix('transaksi')->middleware(['role:admin'])->group(function () {
+        Route::get('/', [TransaksiController::class, 'index']);
+        Route::post('/', [TransaksiController::class, 'addTransaksi']);
+    //     Route::put('/', [TransaksiController::class, 'editUser']);
+    //     Route::delete('/', [TransaksiController::class, 'deleteUser']);
+    //     Route::get('/detail', [TransaksiController::class, 'getUserDetail']);
     });
 
     Route::prefix('pengguna')->middleware(['role:admin'])->group(function () {
@@ -74,6 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/produk', [ProdukController::class, 'addProduk']);
     Route::put('/produk', [ProdukController::class, 'editProduk']);
     Route::delete('/produk', [ProdukController::class, 'deleteProduk']);
+    Route::get('/search/produk', [ProdukController::class, 'searchProduks']);
 
     Route::get('/pengajuan', [PengajuanController::class, 'index']);
     Route::get('/pengajuan/detail', [PengajuanController::class, 'getPengajuanDetail']);

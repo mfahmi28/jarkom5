@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('css/materialdesignicons.min.css') }}">
+        <link rel="stylesheet" href="{{asset('plugins/select2/select2.min.css')}}"/>
 
         <style>
             html, body {
@@ -54,6 +55,7 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/jquery-3.6.1.min.js') }}"></script>
     <script src="{{ asset('js/flowbite.js') }}"></script>
+    <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 
     <script>
         const showLoadingScreen = (isShow=false) => {
