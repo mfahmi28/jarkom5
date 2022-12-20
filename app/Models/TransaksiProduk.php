@@ -21,8 +21,6 @@ class TransaksiProduk extends Model
         'qty',
         'locked_price',
         'locked_total',
-        'transaksi_id',
-        'produk_id',
     ];
 
     const CREATED_AT = null;

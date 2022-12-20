@@ -7,6 +7,7 @@ use App\Models\Produk;
 use App\Models\Supplier;
 use App\Models\KategoriProduk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProdukController extends Controller
 {
@@ -66,7 +67,7 @@ class ProdukController extends Controller
         $fetchProduk = Produk::select('id', 'supplier_id', 'kategori_produk_id AS kategori_id', 'kode', 'nama', 'harga_per_qty', 'satuan')
             ->where('id', $request->produk_id)
             ->first();
-            
+
         $produkDetail = [
             'id' => $fetchProduk->id,
             'supplier_id' => $fetchProduk->supplier_id,
@@ -159,5 +160,18 @@ class ProdukController extends Controller
             'status' => $deleteProduk ? 'OK' : 'FAIL',
             'message' => $deleteProduk ? 'Berhasil Menghapus Data!' : 'Gagal Menghapus Data!'
         ]);
+    }
+
+    public function searchProduks(Request $request)
+    {
+        $search_query = $request->input('q') ?? '';
+        $search_limit = $request->input('l') ?? 5;
+        $fetchProduk = Produk::select('id', 'kode', 'nama', 'supplier_id', 'harga_per_qty')
+            ->where(DB::raw('lower(nama)'), 'like', '%' . strtolower($search_query) . '%');
+        if ($request->input('s')) {
+            $fetchProduk = $fetchProduk->where('supplier_id', intval($request->input('s')));
+        }
+        $fetchProduk = $fetchProduk->limit($search_limit)->get();
+        return response()->json($fetchProduk);
     }
 }

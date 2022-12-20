@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,9 @@ class Transaksi extends Model
 
     public $table = 'transaksi';
     protected $primaryKey = 'id';
+
+    public const DEFAULT_TAX = 1100;
+    public const EXPIRED_DAYS = 40;
 
     public $status_names = [
         'Pending',
@@ -90,7 +94,14 @@ class Transaksi extends Model
 
     public function getStatusNameAttribute()
     {
-        return (isset($this->status_names[$this->status]) ? $this->status_names[$this->status] : "-" );
+        $r = "-";
+        if ($this->status === 0) {
+            $r = Carbon::now()->greaterThan($this->expired_date) ? "Expired" : "Pending";
+        }else if(isset($this->status_names[$this->status])){
+            $r = $this->status_names[$this->status] ;
+        }
+        return $r;
+        // return (isset($this->status_names[$this->status]) ? $this->status_names[$this->status] : "-" );
     }
 
     // inactive attribute, use append/setAppends on query
