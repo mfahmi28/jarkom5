@@ -35,8 +35,8 @@ class CreateTransaksiTable extends Migration
             $table->dateTime('recieved_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('supplier_id')->references('id')->on('suppliers');
-            $table->foreign('cabang_id')->references('id')->on('cabang');
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
+            $table->foreign('cabang_id')->references('id')->on('cabang')->onDelete('cascade');
             $table->foreign('maker_id')->references('id')->on('users');
             $table->foreign('reciever_id')->references('id')->on('users');
         });

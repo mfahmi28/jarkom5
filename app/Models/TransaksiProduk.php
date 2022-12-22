@@ -23,6 +23,8 @@ class TransaksiProduk extends Model
         'locked_total',
     ];
 
+    public $appends = ['produk_name', 'actual_price', 'actual_total'];
+
     const CREATED_AT = null;
     const UPDATED_AT = null;
 
@@ -34,6 +36,15 @@ class TransaksiProduk extends Model
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'produk_id');
+    }
+
+    /**
+     * Get simulated actual Price for this date and time
+     *
+     **/
+    public function getProdukNameAttribute()
+    {
+        return ($this->produk->nama);
     }
 
     /**

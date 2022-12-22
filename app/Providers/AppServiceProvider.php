@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         /**
          * Check if user have specified Role
-         * Usage : @role('role1|role2|role3') ... @endrole
+         * Usage : @role('role1|role2|role3') ... @else ... @endrole
          * */
         Blade::if('role', function ($roles) {
             $user = Auth::user();

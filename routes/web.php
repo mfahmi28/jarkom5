@@ -47,9 +47,10 @@ Route::middleware('auth')->group(function () {
     Route::prefix('transaksi')->middleware(['role:admin'])->group(function () {
         Route::get('/', [TransaksiController::class, 'index']);
         Route::post('/', [TransaksiController::class, 'addTransaksi']);
-    //     Route::put('/', [TransaksiController::class, 'editUser']);
-    //     Route::delete('/', [TransaksiController::class, 'deleteUser']);
-    //     Route::get('/detail', [TransaksiController::class, 'getUserDetail']);
+        Route::get('/detail', [TransaksiController::class, 'getTransaksiDetail']);
+        Route::post('/{id}/approve', [TransaksiController::class, 'approve']);
+        Route::post('/{id}/reject', [TransaksiController::class, 'reject']);
+        Route::post('/{id}/delete', [TransaksiController::class, 'delete']);
     });
 
     Route::prefix('pengguna')->middleware(['role:admin'])->group(function () {

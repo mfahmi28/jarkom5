@@ -104,13 +104,13 @@ class Transaksi extends Model
         // return (isset($this->status_names[$this->status]) ? $this->status_names[$this->status] : "-" );
     }
 
-    // inactive attribute, use append/setAppends on query
+    // inactive attribute, use append/setAppends 'total' on query
     public function getTotalAttribute()
     {
         return $this->transaksi_produks()->sum('locked_total');
     }
 
-    // inactive attribute, use append/setAppends on query
+    // inactive attribute, use append/setAppends 'subtotal' on query
     public function getSubTotalAttribute()
     {
         $t = $this->transaksi_produks()->sum('locked_total') ?? 0;

@@ -29,14 +29,14 @@ class TransaksiController extends Controller
         return view('transaksi.index', compact('transactions', 'supplierList', 'cabangList'));
     }
 
-    public function getUserDetail(Request $request)
+    public function getTransaksiDetail(Request $request)
     {
         $request->validate([
-            'pengguna_id' => 'required'
+            'transasksi_id' => 'required'
         ]);
 
-        $user = User::query()
-            ->find($request->pengguna_id);
+        $user = Transaksi::with('transaksi_produks')
+            ->find($request->transasksi_id)->append(['total', 'subtotal']);
 
         if(empty($user)) {
             return response()->json([
@@ -47,7 +47,7 @@ class TransaksiController extends Controller
 
         return response()->json([
             'status' => 'OK',
-            'user_detail' => $user->toArray()
+            'transaksi_detail' => $user->toArray()
         ]);
     }
 
@@ -106,57 +106,55 @@ class TransaksiController extends Controller
         ]);
     }
 
-    public function editUser(Request $request)
+    public function approve($id)
     {
-        $validates = [
-            'name' => 'required',
-            'email' => 'required|email',
-            'username' => 'required|alpha_num',
-            'password' => 'nullable|alpha_num',
-            'role_id' => 'required|exists:roles,id',
-            'pengguna_id' => 'required|exists:users,id'
-        ];
-
-        if($request->role_id == 3) {
-            $validates['supplier_id'] = 'required';
-        } else if($request->role_id == 4) {
-            $validates['cabang_id'] = 'required';
+        $user = Auth::user();
+        $transaksi = Transaksi::find($id);
+        if ($transaksi && ($user->role->slug == "admin" || $user->role->slug == "admin-cabang")) {
+            $transaksi->update(['status'=>1]);
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Berhasil Mengubah Data!'
+            ]);
         }
-
-        $request->validate($validates);
-
-        $updates = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'username' => Str::lower($request->username),
-            'role_id' => $request->role_id,
-            'cabang_id' => !empty($request->cabang_id) ? $request->cabang_id : null,
-            'supplier_id' => !empty($request->supplier_id) ? $request->supplier_id : null
-        ];
-
-        if ($request->password && !empty($request->password)) {
-            $updates['password'] = bcrypt($request->password);
-        }
-
-        $editUser = User::find($request->pengguna_id)->update($updates);
-
         return response()->json([
-            'status' => $editUser ? 'OK' : 'FAIL',
-            'message' => $editUser ? 'Berhasil Mengubah Data!' : 'Gagal Mengubah Data!'
+            'status' => 'FAIL',
+            'message' => 'Gagal Mengubah Data!'
         ]);
     }
 
-    public function deleteUser(Request $request)
+    public function reject($id)
     {
-        $request->validate([
-            'pengguna_id' => 'required|exists:users,id'
-        ]);
-
-        $deleteUser = User::find($request->pengguna_id)->delete();
-
+        $user = Auth::user();
+        $transaksi = Transaksi::find($id);
+        if ($transaksi && ($user->role->slug == "admin" || $user->role->slug == "admin-cabang")) {
+            $transaksi->update(['status'=>2]);
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Berhasil Mengubah Data!'
+            ]);
+        }
         return response()->json([
-            'status' => $deleteUser ? 'OK' : 'FAIL',
-            'message' => $deleteUser ? 'Berhasil Menghapus Data!' : 'Gagal Menghapus Data!'
+            'status' => 'FAIL',
+            'message' => 'Gagal Mengubah Data!'
+        ]);
+    }
+
+
+    public function delete($id)
+    {
+        $user = Auth::user();
+        $transaksi = Transaksi::find($id);
+        if ($transaksi && ($user->role->slug == "admin" || $user->role->slug == "admin-cabang")) {
+            $transaksi->delete();
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Berhasil Menghapus Data!'
+            ]);
+        }
+        return response()->json([
+            'status' => 'FAIL',
+            'message' => 'Gagal Menghapus Data!'
         ]);
     }
 }

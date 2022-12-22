@@ -2,7 +2,11 @@ const loadSelect2 = () => {
     $('#create_supplier_id').select2();
     $('#create_cabang_id').select2();
 }
-var modals = {addModal: undefined, editModal: undefined};
+var modals = {addModal: undefined, detailModal: undefined};
+
+function toIdr(int) {
+    return (Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumSignificantDigits: int.toString().length }).format(int));
+}
 
 function calculateTotal() {
     let total_product_prices = 0;
@@ -17,44 +21,96 @@ function calculateTotal() {
 
     let subtotal = tax+total_product_prices;
 
-    $("#create_calc_products").text(Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumSignificantDigits: total_product_prices.toString().length }).format(total_product_prices));
-    $("#create_calc_tax").text(Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumSignificantDigits: tax.toString().length }).format(tax));
-    $("#create_calc_subtotal").text(Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumSignificantDigits: subtotal.toString().length }).format(subtotal));
-    $("#create_calc_total").text(Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumSignificantDigits: subtotal.toString().length }).format(subtotal));
+    $("#create_calc_products").text(toIdr(total_product_prices));
+    $("#create_calc_tax").text(toIdr(tax));
+    $("#create_calc_subtotal").text(toIdr(subtotal));
+    $("#create_calc_total").text(toIdr(subtotal));
 
     return ({products: total_product_prices, tax: tax, subtotal: tax+total_product_prices});
 }
 
 $(function () {
     const addModalEl = document.getElementById('addModal');
-    var options = {
-        onShow: () => {
-            $('#create_order_code').val(null).change();
-            $('#create_description').val(null).change();
-            $('#estimated_date').val(null).change();
+    const detailModalEl = document.getElementById('detailModal');
 
-            $('#create_supplier_id').val(null).change();
-            $('#create_cabang_id').val(null).change();
+    modals["addModal"] = new Modal(addModalEl, {});
+    modals["detailModal"] = new Modal(detailModalEl, {});
 
-            $('#create_supplier_id').select2({
-                placeholder: "Pilih supplier",
-            });
-            // $('#create_cabang_id').select2({
-            //     placeholder: "Pilih cabang",
-            // });
 
-            // $('#create_produk_id').select2();
+    window.showTransactionCreate = () => {
+        $('#create_order_code').val(null).change();
+        $('#create_description').val(null).change();
+        $('#estimated_date').val(null).change();
 
-            if ($('#create_produk_id').select2()) {
-                $('#create_produk_id').select2('destroy');
+        $('#create_supplier_id').val(null).change();
+        $('#create_cabang_id').val(null).change();
+
+        $('#create_produk_id').val(null).change();
+        $("#create_produk_id").attr("disabled", true);
+
+        calculateTotal();
+        modals["addModal"].show();
+
+        if ($('#create_produk_id').select2()) {
+            $('#create_produk_id').select2('destroy');
+        }
+
+        $('#create_supplier_id').select2({
+            placeholder: "Pilih supplier",
+        });
+    }
+
+    window.showTransactionDetail = (transasksi_id) => {
+        showLoadingScreen(true)
+
+        $.ajax({
+            type: 'GET',
+            url: '/transaksi/detail',
+            data: {
+                transasksi_id: transasksi_id
+            },
+            success: function(response) {
+                console.log(response);
+                $("#detail_apply").attr('data-transaksi_id', response.transaksi_detail.id);
+                $("#detail_order_code").text(response.transaksi_detail.order_code);
+                $("#detail_supplier").text(response.transaksi_detail.supplier);
+                $("#detail_estimated_date").text(response.transaksi_detail.estimated_date);
+                $("#detail_supplier").text(response.transaksi_detail.supplier);
+                $("#detail_description").text(response.transaksi_detail.description);
+                $("#detail_status_name").text(response.transaksi_detail.status_name);
+                $("#detail_tax").text(toIdr(response.transaksi_detail.tax));
+                $("#detail_total").text(toIdr(response.transaksi_detail.total));
+                $("#detail_sub_total").text(toIdr(response.transaksi_detail.subtotal));
+                showLoadingScreen(false);
+
+                $("#detail_list_produks").html("");
+                if (response.transaksi_detail.transaksi_produks) {
+                    response.transaksi_detail.transaksi_produks.forEach(produk => {
+                        $("#detail_list_produks").append(listProdukTemplate(produk.produk_name, produk.qty));
+                    });
+                }
+
+                if(response.status == 'OK') {
+                    modals["detailModal"].show();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                showLoadingScreen(false);
+
+                alert('Terjadi Kesalahan! Silahkan Ulangi');
             }
-            $('#create_produk_id').val(null).change();
-            $("#create_produk_id").attr("disabled", true);
+        })
+    }
 
-            calculateTotal();
-        },
-    };
-    modals["addModal"] = new Modal(addModalEl, options);
+    $("#detail_apply button").on("click", function (e) {
+        let id = $( this ).parent().attr('data-transaksi_id');
+        let action = $( this ).attr('data-action');
+        if ( action ) {
+            applyTransaksi(id, action);
+        }
+    });
 
     $(".toggle-modal").on("click", function (e) {
         e.preventDefault();

@@ -20,8 +20,8 @@ class CreateTransaksiProdukTable extends Migration
             $table->bigInteger('qty');
             $table->bigInteger('locked_price');
             $table->bigInteger('locked_total');
-            $table->foreign('transaksi_id')->references('id')->on('transaksi');
-            $table->foreign('produk_id')->references('id')->on('produk');
+            $table->foreign('transaksi_id')->references('id')->on('transaksi')->onDelete('cascade');
+            $table->foreign('produk_id')->references('id')->on('produk')->onDelete('cascade');
         });
     }
 
