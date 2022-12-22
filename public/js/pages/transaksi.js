@@ -70,7 +70,7 @@ $(function () {
         $("#create_produk_id").attr("disabled", false);
         $('#create_produk_id').select2({
             placeholder: "Pilih produk",
-            allowClear: true,
+            // allowClear: true,
             ajax: {
                 url: `${route}/search/produk`,
                 delay: 250,
@@ -128,5 +128,4 @@ $(function () {
         $(`.create_new_produk[data-produk=${$(this).attr('data-produk')}]`).remove();
         calculateTotal();
     });
-
 });

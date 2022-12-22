@@ -20,7 +20,7 @@
                     <div class="mb-6">
                         <label class="text-sm font-semibold mb-3">Supplier<span class="text-red-600">*</span></label>
                         {{-- <input type="hidden" name="create_supplier_id_old"> --}}
-                        <select id="create_supplier_id" name="supplier_id" class="supplier_id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih supplier">
+                        <select id="create_supplier_id" name="supplier_id" class="supplier_id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0 select2" placeholder="-">
                             <option value="" selected disabled>-</option>
                             @foreach($supplierList as $supplier)
                             <option value="{{ $supplier->id }}">{{ $supplier->nama }}</option>
@@ -34,7 +34,7 @@
                     <div>
                         <label class="text-sm font-semibold mb-3">Tujuan Cabang<span class="text-red-600">*</span></label>
                         <select id="create_cabang_id" name="cabang_id" class="cabang_id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0">
-                            <option value="" selected disabled>-</option>
+                            <option value="" selected disabled>Pilih cabang tujuan</option>
                             @foreach($cabangList as $cabang)
                             <option value="{{ $cabang->id }}">{{ $cabang->nama }}</option>
                             @endforeach
@@ -48,7 +48,7 @@
                 <div class="px-6 pb-6">
                     <label class="text-sm font-semibold">Daftar Produk</label>
                     <input id="create_tax" type="hidden" value="{{App\Models\Transaksi::DEFAULT_TAX}}">
-                    <hr class="border mt-1 mb-4" style="">
+                    <hr class="mt-1 mb-4" style="">
                     <div  class="grid grid-cols-12 gap-x-4 items-end mb-6">
                         <div class="col-span-7">
                             <label class="text-sm font-semibold mb-3">Produk<span class="text-red-600">*</span></label>

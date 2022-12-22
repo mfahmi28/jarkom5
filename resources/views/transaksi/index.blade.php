@@ -1,5 +1,45 @@
 @extends('layouts.page')
 
+@section('style')
+    <style>
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 44px;
+            background: #f9fafb;
+            border: unset;
+            border-radius: 0.5em;
+        }
+        
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 44px;
+            padding-left: 12px;
+            font-size: 14px;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 44px;
+            top: 0;
+            right: 0;
+            margin-right: 12px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #6b7280;
+        }
+
+        .select2-container--open .select2-dropdown--below {
+            border-top: 1px solid #aaa;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="flex item-center justify-between mb-8">
         <div class="flex cursor-pointer">
@@ -164,7 +204,7 @@
 
 @section('javascript')
     <script>
-        const route = "{{url('')}}";
+        const route = "{{ url('') }}";
 
         const addTransaksi = () => {
             showLoadingScreen(true)
@@ -216,5 +256,5 @@
             `;
         };
     </script>
-    <script src="{{asset('js/pages/transaksi.js')}}"></script>
+    <script src="{{ asset('js/pages/transaksi.js') }}"></script>
 @endsection
