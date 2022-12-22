@@ -28,6 +28,7 @@ class CheckRole
                 }
             }
 
+            // todo if json return json
             // Back if has referer, else Redirects to home
             $referer = $request->header('referer');
             if(empty($referer)) {

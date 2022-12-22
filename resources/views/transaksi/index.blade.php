@@ -48,10 +48,12 @@
                 <span class="font-semibold text-2xl">Transaksi</span>
             </a>
         </div>
+        @role('admin')
         <div class="flex items-center cursor-pointer">
             <i class="mdi mdi-plus text-lg mr-2"></i>
             <span class="text-lg font-semibold" onclick="showTransactionCreate()">Tambah Transaksi</span>
         </div>
+        @endrole
     </div>
     <div class="rounded-xl overflow-x-auto shadow-sm">
         <table class="w-full text-left">
@@ -81,7 +83,9 @@
                         <td class="py-4 px-6">{{$transaction->status_name}}</td>
                         <td class="py-4 px-6 text-center">
                             <i onclick="showTransactionDetail({{$transaction->id}})" class="mdi mdi-pencil text-lg cursor-pointer hover:opacity-75 text-secondary"></i>
+                            @role('admin')
                             <i class="mdi mdi-delete text-lg cursor-pointer hover:opacity-75 text-red-600" onclick="applyTransaksi({{$transaction->id}}, 'delete')"></i>
+                            @endrole
                         </td>
                     </tr>
                     @endforeach

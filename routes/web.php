@@ -46,11 +46,13 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('transaksi')->middleware(['role:admin'])->group(function () {
         Route::get('/', [TransaksiController::class, 'index']);
-        Route::post('/', [TransaksiController::class, 'addTransaksi']);
+        Route::post('/', [TransaksiController::class, 'addTransaksi'])->middleware(['role:admin']);
         Route::get('/detail', [TransaksiController::class, 'getTransaksiDetail']);
-        Route::post('/{id}/approve', [TransaksiController::class, 'approve']);
-        Route::post('/{id}/reject', [TransaksiController::class, 'reject']);
-        Route::post('/{id}/delete', [TransaksiController::class, 'delete']);
+        Route::post('/{id}/approve', [TransaksiController::class, 'approve'])->middleware(['role:md']);
+        Route::post('/{id}/reject', [TransaksiController::class, 'reject'])->middleware(['role:md']);
+        Route::post('/{id}/ship', [TransaksiController::class, 'ship'])->middleware(['role:supplier']);
+        Route::post('/{id}/recieve', [TransaksiController::class, 'recieve'])->middleware(['role:admin-cabang']);
+        Route::post('/{id}/delete', [TransaksiController::class, 'delete'])->middleware(['role:admin']);
     });
 
     Route::prefix('pengguna')->middleware(['role:admin'])->group(function () {

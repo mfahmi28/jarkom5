@@ -57,4 +57,33 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }
+
+    public function InRole(String $roles_string)
+    {
+        $user = $this;
+        $role_array = explode('|', $roles_string);
+        if (isset($user->role->slug)) {
+            return in_array($user->role->slug, $role_array);
+        }
+        return false;
+    }
+
+
+    // todo? - does dynamic permission really needed?
+    // This is not really an elegant solution, eitherway better than writing each policy for every permissions
+    // public function role_allowed(String $permission)
+    // {
+    //     if ($this->role) {
+    //         return in_array($permission, $this->role->permissions);
+    //     }
+    //     return false;
+    // }
+
+    // public function role_cannot(String $permission)
+    // {
+    //     if ($this->role) {
+    //         return in_array($permission, $this->role->permissions);
+    //     }
+    //     return false;
+    // }
 }

@@ -19,7 +19,9 @@ class Transaksi extends Model
     public $status_names = [
         'Pending',
         'Approved',
-        'Rejected'
+        'Rejected',
+        'Shipping',
+        'Recieved',
     ];
 
     //!! 'sort_subtotal' FOR SORTING PURPOSE ONLY

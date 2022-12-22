@@ -22,28 +22,55 @@ class TransaksiController extends Controller
      **/
     public function index()
     {
-        $transactions = Transaksi::query()->orderBy('updated_at', 'DESC')->paginate(10);
+        $user = Auth::user();
+        $transactions = Transaksi::query();
         $supplierList = Supplier::all();
         $cabangList = Cabang::all();
+
+        //todo index by permission
+        //todo estimated red when exceed est date
+
+        if ($user->inRole('supplier')) {
+            if ($user->supplier) {
+                $transactions = $transactions->where('supplier_id', $user->supplier->id );
+            } else {
+                return redirect(url('/'));
+            }
+        }
+
+        $transactions = $transactions->orderBy('updated_at', 'DESC')->paginate(10);
 
         return view('transaksi.index', compact('transactions', 'supplierList', 'cabangList'));
     }
 
     public function getTransaksiDetail(Request $request)
     {
+        $user = Auth::user();
         $request->validate([
             'transasksi_id' => 'required'
         ]);
 
-        $user = Transaksi::with('transaksi_produks')
-            ->find($request->transasksi_id)->append(['total', 'subtotal']);
+        $transaksi = Transaksi::with('transaksi_produks');
 
-        if(empty($user)) {
+        if ($user->inRole('supplier')) { //prevent supplier to get other's Transaction
+            if ($user->supplier && $user->supplier->id) {
+                $transaksi = $transaksi->where('supplier_id', $user->supplier->id);
+            } else {
+                return response()->json([
+                    'status' => 'FAIL',
+                    'message' => 'Transasksi Tidak Ditemukan!'
+                ]);
+            }
+        }
+
+        if(empty($transaksi)) {
             return response()->json([
                 'status' => 'FAIL',
-                'message' => 'User Tidak Ditemukan!'
+                'message' => 'Transasksi Tidak Ditemukan!'
             ]);
         }
+
+        $transaksi = $transaksi->find($request->transasksi_id)->append(['total', 'subtotal']);
 
         return response()->json([
             'status' => 'OK',
@@ -53,6 +80,8 @@ class TransaksiController extends Controller
 
     public function addTransaksi(Request $request)
     {
+        $user = Auth::user();
+
         $validates = [
             'order_code' => 'required',
             'supplier_id' => 'required|exists:suppliers,id',
@@ -71,7 +100,7 @@ class TransaksiController extends Controller
             'order_code' => $request->input('order_code'),
             'supplier_id' => $request->input('supplier_id'),
             'cabang_id' => $request->input('cabang_id'),
-            'maker_id' => Auth::user()->id,
+            'maker_id' => $user->id,
             'description' => $request->input('description'),
             'tax' => Transaksi::DEFAULT_TAX,
             // 'sort_subtotal' => $request->input('order_code'),
@@ -86,13 +115,13 @@ class TransaksiController extends Controller
         $sub_total = Transaksi::DEFAULT_TAX;
         $new_products = [];
         foreach ($products as $product) {
-            $sub_total += (intval($product->harga) * intval($productList[$product->id]["qty"]));
+            $sub_total += (intval($product->harga_per_qty) * intval($productList[$product->id]["qty"]));
             $new_products[] = [
                 "transaksi_id" => $transaksi->id,
                 "produk_id" => $product->id,
                 "qty" => intval($productList[$product->id]["qty"]),
-                "locked_price" => intval($product->harga),
-                "locked_total" => (intval($product->harga) * intval($productList[$product->id]["qty"]))
+                "locked_price" => intval($product->harga_per_qty),
+                "locked_total" => (intval($product->harga_per_qty) * intval($productList[$product->id]["qty"]))
             ];
         }
 
@@ -108,31 +137,30 @@ class TransaksiController extends Controller
 
     public function approve($id)
     {
-        $user = Auth::user();
         $transaksi = Transaksi::find($id);
-        if ($transaksi && ($user->role->slug == "admin" || $user->role->slug == "admin-cabang")) {
-            $transaksi->update(['status'=>1]);
-            return response()->json([
-                'status' => 'OK',
-                'message' => 'Berhasil Mengubah Data!'
-            ]);
-        }
+        $transaksi->update(['status'=>1]);
         return response()->json([
-            'status' => 'FAIL',
-            'message' => 'Gagal Mengubah Data!'
+            'status' => 'OK',
+            'message' => 'Berhasil Mengubah Data!'
         ]);
     }
 
     public function reject($id)
     {
-        $user = Auth::user();
         $transaksi = Transaksi::find($id);
-        if ($transaksi && ($user->role->slug == "admin" || $user->role->slug == "admin-cabang")) {
-            $transaksi->update(['status'=>2]);
-            return response()->json([
-                'status' => 'OK',
-                'message' => 'Berhasil Mengubah Data!'
-            ]);
+        $transaksi->update(['status'=>2]);
+        return response()->json([
+            'status' => 'OK',
+            'message' => 'Berhasil Mengubah Data!'
+        ]);
+    }
+
+    public function ship($id)
+    {
+        $user = Auth::user();
+        if ($user->supplier) {
+            $transaksi = Transaksi::where('supplier_id', $user->supplier->id)->find($id);
+            return $this->setDataStatus($transaksi, 3);
         }
         return response()->json([
             'status' => 'FAIL',
@@ -140,12 +168,26 @@ class TransaksiController extends Controller
         ]);
     }
 
+    public function recieve($id)
+    {
+        $user = Auth::user();
+        $transaksi = Transaksi::find($id);
+        $transaksi->update([
+            'status'=> 4,
+            'reciever_id' => $user->id,
+            'recieved_at' => now()->toDateTimeString()
+        ]);
+        return response()->json([
+            'status' => 'OK',
+            'message' => 'Berhasil Mengubah Data!'
+        ]);
+    }
 
     public function delete($id)
     {
         $user = Auth::user();
         $transaksi = Transaksi::find($id);
-        if ($transaksi && ($user->role->slug == "admin" || $user->role->slug == "admin-cabang")) {
+        if ($transaksi && ($user->InRole("admin|admin-cabang"))) {
             $transaksi->delete();
             return response()->json([
                 'status' => 'OK',

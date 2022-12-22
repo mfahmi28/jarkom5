@@ -13,4 +13,14 @@ class Role extends Model
     const CREATED_AT = null;
     const UPDATED_AT = null;
 
+    protected $fillable = [
+        'name',
+        'slug',
+        // 'permissions',
+    ];
+
+    // todo? - does dynamic permission really needed?
+    // protected $casts = [
+    //     'permissions' => 'array',
+    // ];
 }
