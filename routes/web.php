@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
     //     return view('transaksi.index');
     // });
 
-    Route::prefix('transaksi')->middleware(['role:admin'])->group(function () {
+    Route::prefix('transaksi')->middleware(['role:admin|md|admin-cabang|supplier'])->group(function () {
         Route::get('/', [TransaksiController::class, 'index']);
         Route::post('/', [TransaksiController::class, 'addTransaksi'])->middleware(['role:admin']);
         Route::get('/detail', [TransaksiController::class, 'getTransaksiDetail']);
@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/{id}/delete', [TransaksiController::class, 'delete'])->middleware(['role:admin']);
     });
 
-    Route::prefix('pengguna')->middleware(['role:admin'])->group(function () {
+    Route::prefix('pengguna')->middleware(['role:admin|md'])->group(function () {
         Route::get('/', [PenggunaController::class, 'index']);
         Route::post('/', [PenggunaController::class, 'addUser']);
         Route::put('/', [PenggunaController::class, 'editUser']);

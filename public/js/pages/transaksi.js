@@ -62,17 +62,18 @@ $(function () {
         });
     }
 
-    window.showTransactionDetail = (transasksi_id) => {
+    window.showTransactionDetail = (transaksi_id) => {
         showLoadingScreen(true)
 
         $.ajax({
             type: 'GET',
             url: '/transaksi/detail',
             data: {
-                transasksi_id: transasksi_id
+                transaksi_id: transaksi_id
             },
             success: function(response) {
-                console.log(response);
+                showLoadingScreen(false);
+
                 $("#detail_apply").attr('data-transaksi_id', response.transaksi_detail.id);
                 $("#detail_order_code").text(response.transaksi_detail.order_code);
                 $("#detail_supplier").text(response.transaksi_detail.supplier);
@@ -84,13 +85,30 @@ $(function () {
                 $("#detail_total_produk").text(toIdr(response.transaksi_detail.total));
                 $("#detail_total").text(toIdr(response.transaksi_detail.subtotal));
                 $("#detail_sub_total").text(toIdr(response.transaksi_detail.subtotal));
-                showLoadingScreen(false);
 
                 $("#detail_list_produks").html("");
                 if (response.transaksi_detail.transaksi_produks) {
-                    response.transaksi_detail.transaksi_produks.forEach(produk => {
-                        $("#detail_list_produks").append(listProdukTemplate(produk.produk_name, produk.qty));
+                    response.transaksi_detail.transaksi_produks.forEach((produk, idx) => {
+                        $("#detail_list_produks").append(listProdukTemplate(produk.produk_name, produk.qty, (idx%2 ? 'bg-purple-100' : 'bg-white')));
                     });
+                }
+
+                if(response.transaksi_detail.status == 0) {
+                    $('.btn-approve').removeClass('hidden')
+                } else {
+                    $('.btn-approve').addClass('hidden')
+                }
+
+                if(response.transaksi_detail.status == 1) {
+                    $('.btn-ship').removeClass('hidden')
+                } else {
+                    $('.btn-ship').addClass('hidden')
+                }
+
+                if(response.transaksi_detail.status == 3) {
+                    $('.btn-receive').removeClass('hidden')
+                } else {
+                    $('.btn-receive').addClass('hidden')
                 }
 
                 if(response.status == 'OK') {

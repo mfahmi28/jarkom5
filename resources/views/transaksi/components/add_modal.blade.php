@@ -13,10 +13,10 @@
             </div>
             <form id="create_form" class="modal-form">
                 <div class="p-6 space-y-6">
-                    <div class="mb-6">
+                    <!-- <div class="mb-6">
                         <label class="text-sm font-semibold mb-3">Order Number<span class="text-red-600">*</span></label>
                         <input id="create_order_code" type="text" name="order_code" class="kode w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan order number">
-                    </div>
+                    </div> -->
                     <div class="mb-6">
                         <label class="text-sm font-semibold mb-3">Supplier<span class="text-red-600">*</span></label>
                         {{-- <input type="hidden" name="create_supplier_id_old"> --}}
@@ -52,7 +52,7 @@
                     <div  class="grid grid-cols-12 gap-x-4 items-end mb-6">
                         <div class="col-span-7">
                             <label class="text-sm font-semibold mb-3">Produk<span class="text-red-600">*</span></label>
-                            <select id="create_produk_id" class="produk_id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" ></select>
+                            <select id="create_produk_id" class="produk_id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0"></select>
                             {{-- <input id="create_produk_id" type="text" class="produk_id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih produk"> --}}
                         </div>
                         <div class="col-span-3">

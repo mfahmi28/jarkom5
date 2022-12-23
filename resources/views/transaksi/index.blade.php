@@ -65,26 +65,48 @@
                     <th class="py-4 px-6">Pemesan</th>
                     <th class="py-4 px-6">Supplier</th>
                     <th class="py-4 px-6">Tujuan Cabang</th>
-                    <th class="py-4 px-6">Status</th>
+                    <th class="py-4 px-6" width="140px">Status</th>
                     <th class="py-4 px-6 text-center" width="150px">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-
-                @if(!empty($transactions))
-                    @foreach ($transactions as $transaction)
-                    <tr class="bg-white">
-                        <td class="py-4 px-6">{{$transaction->order_code}}</td>
-                        <td class="py-4 px-6">{{$transaction->created_at}}</td>
-                        <td class="py-4 px-6">{{$transaction->estimated_date}}</td>
-                        <td class="py-4 px-6">{{$transaction->maker->name}}</td>
-                        <td class="py-4 px-6">{{$transaction->supplier->nama}}</td>
-                        <td class="py-4 px-6">{{$transaction->cabang->nama}}</td>
-                        <td class="py-4 px-6">{{$transaction->status_name}}</td>
+                @if(sizeof($transactions))
+                    @foreach ($transactions as $idx => $transaction)
+                    <tr class="{{ $idx%2 ? 'bg-purple-100' : 'bg-white' }}">
+                        <td class="py-4 px-6">{{ $transaction->order_code }}</td>
+                        <td class="py-4 px-6">{{ $transaction->created_at }}</td>
+                        <td class="py-4 px-6">{{ $transaction->estimated_date }}</td>
+                        <td class="py-4 px-6">{{ $transaction->maker->name }}</td>
+                        <td class="py-4 px-6">{{ $transaction->supplier->nama }}</td>
+                        <td class="py-4 px-6">{{ $transaction->cabang->nama }}</td>
+                        <td class="py-4 px-6">
+                            @if($transaction->status == 0)
+                                <span class="text-gray-500 text-sm">
+                                    <i class="mdi mdi-clock text-sm mr-1"></i> {{ $transaction->status_name }}
+                                </span>
+                            @elseif($transaction->status == 1)
+                                <span class="text-green-500 text-sm">
+                                    <i class="mdi mdi-check-circle text-sm mr-1"></i> {{ $transaction->status_name }}
+                                </span>
+                            @elseif($transaction->status == 2)
+                                <span class="text-red-500 text-sm">
+                                    <i class="mdi mdi-close-circle text-sm mr-1"></i> {{ $transaction->status_name }}
+                                </span>
+                            @elseif($transaction->status == 3)
+                                <span class="text-blue-500 text-sm">
+                                    <i class="mdi mdi-arrow-up-bold-circle text-sm mr-1"></i> {{ $transaction->status_name }}
+                                </span>
+                            @elseif($transaction->status == 4)
+                                <span class="text-orange-500 text-sm">
+                                    <i class="mdi mdi-arrow-down-bold-circle text-sm mr-1"></i> {{ $transaction->status_name }}
+                                </span>
+                            @endif
+                        
+                        </td>
                         <td class="py-4 px-6 text-center">
-                            <i onclick="showTransactionDetail({{$transaction->id}})" class="mdi mdi-pencil text-lg cursor-pointer hover:opacity-75 text-secondary"></i>
+                            <i onclick="showTransactionDetail({{ $transaction->id }})" class="mdi mdi-file-document text-lg cursor-pointer hover:opacity-75 text-secondary"></i>
                             @role('admin')
-                            <i class="mdi mdi-delete text-lg cursor-pointer hover:opacity-75 text-red-600" onclick="applyTransaksi({{$transaction->id}}, 'delete')"></i>
+                            <i class="mdi mdi-delete text-lg cursor-pointer hover:opacity-75 text-red-600 ml-5" onclick="applyTransaksi({{ $transaction->id }}, 'delete')"></i>
                             @endrole
                         </td>
                     </tr>
@@ -92,6 +114,7 @@
                 @else
                     <tr class="bg-white">
                         <td class="py-4 px-6 text-center" colspan="100%">Tidak Ada Data</td>
+                    </tr>
                 @endif
             </tbody>
         </table>
@@ -108,10 +131,12 @@
 
         const addTransaksi = () => {
             showLoadingScreen(true)
+
             let array = $("#create_form").serializeArray();
             let objects = Object.fromEntries(
                 array.map((item) => [item.name, item.value])
             );
+
             $.ajax({
                 type: 'POST',
                 url: '/transaksi',
@@ -120,6 +145,8 @@
                     ...objects,
                 },
                 success: function(response) {
+                    showLoadingScreen(false)
+
                     if(response.status == 'OK') {
                         location.reload()
                     } else {
@@ -154,9 +181,9 @@
             `;
         };
 
-        const listProdukTemplate = (name, qty) => {
+        const listProdukTemplate = (name, qty, bgColor) => {
             return `
-                <tr class="bg-white">
+                <tr class="${bgColor}">
                     <td class="py-4 px-6">${name}</td>
                     <td class="py-4 px-6">${qty}</td>
                 </tr>`;
@@ -164,6 +191,7 @@
 
         const applyTransaksi = (id, action) => {
             showLoadingScreen(true)
+
             $.ajax({
                 type: 'POST',
                 url: `/transaksi/${id}/${action}`,
@@ -171,6 +199,7 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
+                    showLoadingScreen(false)
 
                     if(response.status == 'OK') {
                         location.reload()
@@ -185,7 +214,6 @@
                 }
             })
         }
-
     </script>
     <script src="{{ asset('js/pages/transaksi.js') }}"></script>
 @endsection

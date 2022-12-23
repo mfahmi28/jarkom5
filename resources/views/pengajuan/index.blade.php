@@ -38,15 +38,15 @@
                         <td class="py-4 px-6">
                             @if($pengajuan->status == 'APPROVED')
                                 <span class="text-green-500 text-sm">
-                                    <i class="mdi mdi-check-circle text-sm mr-1"></i> DISETUJUI
+                                    <i class="mdi mdi-check-circle text-sm mr-1"></i> Approved
                                 </span>
                             @elseif($pengajuan->status == 'REJECTED')
                                 <span class="text-red-500 text-sm">
-                                    <i class="mdi mdi-close-circle text-sm mr-1"></i> DITOLAK
+                                    <i class="mdi mdi-close-circle text-sm mr-1"></i> Rejected
                                 </span>
                             @else
                                 <span class="text-gray-500 text-sm">
-                                    <i class="mdi mdi-clock text-sm mr-1"></i> PENDING
+                                    <i class="mdi mdi-clock text-sm mr-1"></i> Pending
                                 </span>
                             @endif
                         </td>
@@ -361,15 +361,15 @@
 
                         if(pengajuanDetail.status == 'APPROVED') {
                             statusLabel = `<span class="text-green-500 text-sm">
-                                <i class="mdi mdi-check-circle text-sm mr-1"></i> DISETUJUI
+                                <i class="mdi mdi-check-circle text-sm mr-1"></i> Approved
                             </span>`
                         } else if(pengajuanDetail.status == 'REJECTED') {
                             statusLabel = `<span class="text-red-500 text-sm">
-                                <i class="mdi mdi-close-circle text-sm mr-1"></i> DITOLAK
+                                <i class="mdi mdi-close-circle text-sm mr-1"></i> Rejected
                             </span>`
                         } else {
                             statusLabel = `<span class="text-gray-500 text-sm">
-                                <i class="mdi mdi-clock text-sm mr-1"></i> PENDING
+                                <i class="mdi mdi-clock text-sm mr-1"></i> Pending
                             </span>`
                         }
 

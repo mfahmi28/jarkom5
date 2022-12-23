@@ -16,10 +16,6 @@ use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
 {
-    /**
-     * View Users List
-     *
-     **/
     public function index()
     {
         $user = Auth::user();
@@ -32,7 +28,13 @@ class TransaksiController extends Controller
 
         if ($user->inRole('supplier')) {
             if ($user->supplier) {
-                $transactions = $transactions->where('supplier_id', $user->supplier->id );
+                $transactions = $transactions->where('supplier_id', $user->supplier->id);
+            } else {
+                return redirect(url('/'));
+            }
+        } else if($user->inRole('admin-cabang')) {
+            if ($user->cabang_id) {
+                $transactions = $transactions->where('cabang_id', $user->cabang_id);
             } else {
                 return redirect(url('/'));
             }
@@ -47,7 +49,7 @@ class TransaksiController extends Controller
     {
         $user = Auth::user();
         $request->validate([
-            'transasksi_id' => 'required'
+            'transaksi_id' => 'required'
         ]);
 
         $transaksi = Transaksi::with('transaksi_produks');
@@ -70,7 +72,7 @@ class TransaksiController extends Controller
             ]);
         }
 
-        $transaksi = $transaksi->find($request->transasksi_id)->append(['total', 'subtotal']);
+        $transaksi = $transaksi->find($request->transaksi_id)->append(['total', 'subtotal']);
 
         return response()->json([
             'status' => 'OK',
@@ -83,7 +85,7 @@ class TransaksiController extends Controller
         $user = Auth::user();
 
         $validates = [
-            'order_code' => 'required',
+            // 'order_code' => 'required',
             'supplier_id' => 'required|exists:suppliers,id',
             'cabang_id' => 'required|exists:cabang,id',
             'description' => 'required|string',
@@ -97,7 +99,8 @@ class TransaksiController extends Controller
 
         $transaksi = Transaksi::create([
             'status' => 0,
-            'order_code' => $request->input('order_code'),
+            // 'order_code' => $request->input('order_code'),
+            'order_code' => 'TRX-'.date('ymd').rand(0000, 9999),
             'supplier_id' => $request->input('supplier_id'),
             'cabang_id' => $request->input('cabang_id'),
             'maker_id' => $user->id,
@@ -138,7 +141,8 @@ class TransaksiController extends Controller
     public function approve($id)
     {
         $transaksi = Transaksi::find($id);
-        $transaksi->update(['status'=>1]);
+        $transaksi->update(['status' => 1]);
+
         return response()->json([
             'status' => 'OK',
             'message' => 'Berhasil Mengubah Data!'
@@ -148,7 +152,8 @@ class TransaksiController extends Controller
     public function reject($id)
     {
         $transaksi = Transaksi::find($id);
-        $transaksi->update(['status'=>2]);
+        $transaksi->update(['status' => 2]);
+
         return response()->json([
             'status' => 'OK',
             'message' => 'Berhasil Mengubah Data!'
@@ -159,24 +164,27 @@ class TransaksiController extends Controller
     {
         $user = Auth::user();
         if ($user->supplier) {
-            $transaksi = Transaksi::where('supplier_id', $user->supplier->id)->find($id);
-            return $this->setDataStatus($transaksi, 3);
+            $transaksi = Transaksi::find($id);
+            $transaksi->update(['status' => 3]);
         }
+
         return response()->json([
-            'status' => 'FAIL',
-            'message' => 'Gagal Mengubah Data!'
+            'status' => 'OK',
+            'message' => 'Berhasil Mengubah Data!'
         ]);
     }
 
     public function recieve($id)
     {
         $user = Auth::user();
+
         $transaksi = Transaksi::find($id);
         $transaksi->update([
-            'status'=> 4,
+            'status' => 4,
             'reciever_id' => $user->id,
             'recieved_at' => now()->toDateTimeString()
         ]);
+
         return response()->json([
             'status' => 'OK',
             'message' => 'Berhasil Mengubah Data!'

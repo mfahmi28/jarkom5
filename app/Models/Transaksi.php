@@ -21,7 +21,7 @@ class Transaksi extends Model
         'Approved',
         'Rejected',
         'Shipping',
-        'Recieved',
+        'Received',
     ];
 
     //!! 'sort_subtotal' FOR SORTING PURPOSE ONLY
@@ -118,5 +118,4 @@ class Transaksi extends Model
         $t = $this->transaksi_produks()->sum('locked_total') ?? 0;
         return ($t + $this->tax);
     }
-
 }
