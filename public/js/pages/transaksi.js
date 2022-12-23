@@ -8,7 +8,7 @@ function toIdr(int) {
     return (Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumSignificantDigits: int.toString().length }).format(int));
 }
 
-function calculateTotal() {
+const calculateTotal = () => {
     let total_product_prices = 0;
     let tax = parseInt($("#create_tax").val());
 
@@ -16,7 +16,7 @@ function calculateTotal() {
         let pid = $(this).attr("data-produk");
         let price = parseInt($( this ).find(".produk_price").val());
         let qty = parseInt($( this ).find(".qty").val());
-        total_product_prices = total_product_prices + price*qty;
+        total_product_prices = total_product_prices + (price * qty);
     });
 
     let subtotal = tax+total_product_prices;
@@ -28,6 +28,8 @@ function calculateTotal() {
 
     return ({products: total_product_prices, tax: tax, subtotal: tax+total_product_prices});
 }
+
+window.calculateTotal = calculateTotal();
 
 $(function () {
     const addModalEl = document.getElementById('addModal');
@@ -79,7 +81,8 @@ $(function () {
                 $("#detail_description").text(response.transaksi_detail.description);
                 $("#detail_status_name").text(response.transaksi_detail.status_name);
                 $("#detail_tax").text(toIdr(response.transaksi_detail.tax));
-                $("#detail_total").text(toIdr(response.transaksi_detail.total));
+                $("#detail_total_produk").text(toIdr(response.transaksi_detail.total));
+                $("#detail_total").text(toIdr(response.transaksi_detail.subtotal));
                 $("#detail_sub_total").text(toIdr(response.transaksi_detail.subtotal));
                 showLoadingScreen(false);
 
@@ -139,8 +142,9 @@ $(function () {
                     return query;
                 },
                 processResults: function (data) {
+                    console.log(data)
                     let res = $.map(data, function (e, i) {
-                        return {id: e.id, text: e.nama, price: 5000}
+                        return {id: e.id, text: e.nama, price: e.harga_per_qty}
                     });
                     return { results: res };
                 }

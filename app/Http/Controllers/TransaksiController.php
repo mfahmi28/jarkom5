@@ -74,7 +74,7 @@ class TransaksiController extends Controller
 
         return response()->json([
             'status' => 'OK',
-            'transaksi_detail' => $user->toArray()
+            'transaksi_detail' => $transaksi->toArray()
         ]);
     }
 

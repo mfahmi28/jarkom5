@@ -71,7 +71,7 @@
                     <div class="bg-purple-100 border border-secondary p-4 rounded-lg">
                         <div class="flex items-center justify-between mb-2">
                             <label class="text-sm font-semibold">Total Harga Produk</label>
-                            <div class="text-sm font-semibold"></div>
+                            <div id="detail_total_produk" class="text-sm font-semibold"></div>
                         </div>
                         <div class="flex items-center justify-between mb-2">
                             <label class="text-sm font-semibold">Pajak</label>

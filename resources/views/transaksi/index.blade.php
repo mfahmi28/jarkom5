@@ -145,7 +145,7 @@
                     </div>
                     <div class="col-span-3">
                         <label class="text-sm font-semibold mb-3">Qty<span class="text-red-600">*</span></label>
-                        <input type="number" name="produk_list[${pid}][qty]" class="qty w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" value="${qty}" placeholder="0">
+                        <input type="number"  onchange="calculateTotal()" name="produk_list[${pid}][qty]" class="qty w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" value="${qty}" placeholder="0">
                     </div>
                     <div class="col-span-2">
                         <button type="button" class="remove_produk bg-red-500 w-full py-1.5 rounded-lg text-2xl text-white cursor-pointer" data-produk="${pid}">×</button>
