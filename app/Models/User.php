@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'username', 'cabang_id', 'supplier_id', 'role_id'
     ];
 
     /**
@@ -62,12 +62,13 @@ class User extends Authenticatable
     {
         $user = $this;
         $role_array = explode('|', $roles_string);
+
         if (isset($user->role->slug)) {
             return in_array($user->role->slug, $role_array);
         }
+
         return false;
     }
-
 
     // todo? - does dynamic permission really needed?
     // This is not really an elegant solution, eitherway better than writing each policy for every permissions

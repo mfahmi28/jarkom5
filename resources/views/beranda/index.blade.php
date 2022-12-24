@@ -44,6 +44,10 @@
             <span class="text-3xl text-white font-bold my-auto ml-6">Pengajuan</span>
         </div>
         @endrole
+        <div class="py-6 px-12 rounded-lg bg-secondary flex flex-row hover:opacity-75 cursor-pointer" onclick="goToMenu('/pengajuan')">
+            <i class="mdi mdi-history text-purple-100 text-6xl my-auto"></i>
+            <span class="text-3xl text-white font-bold my-auto ml-6">Log Barang</span>
+        </div>
     </div>
 @endsection
 

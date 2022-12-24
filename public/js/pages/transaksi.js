@@ -89,26 +89,26 @@ $(function () {
                 $("#detail_list_produks").html("");
                 if (response.transaksi_detail.transaksi_produks) {
                     response.transaksi_detail.transaksi_produks.forEach((produk, idx) => {
-                        $("#detail_list_produks").append(listProdukTemplate(produk.produk_name, produk.qty, (idx%2 ? 'bg-purple-100' : 'bg-white')));
+                        $("#detail_list_produks").append(listProdukTemplate(produk.produk_name, produk.qty, (idx%2 ? 'bg-purple-100' : 'bg-white'), produk.id));
                     });
                 }
 
-                if(response.transaksi_detail.status == 0) {
+                if(response.transaksi_detail.status == 0) { // PENDING
                     $('.btn-approve').removeClass('hidden')
                 } else {
                     $('.btn-approve').addClass('hidden')
                 }
 
-                if(response.transaksi_detail.status == 1) {
+                if(response.transaksi_detail.status == 1) { // APPROVED
                     $('.btn-ship').removeClass('hidden')
                 } else {
                     $('.btn-ship').addClass('hidden')
                 }
 
-                if(response.transaksi_detail.status == 3) {
-                    $('.btn-receive').removeClass('hidden')
+                if(response.transaksi_detail.status == 3) { // SHIPPING
+                    $('.btn-receive, .retur-field').removeClass('hidden')
                 } else {
-                    $('.btn-receive').addClass('hidden')
+                    $('.btn-receive, .retur-field').addClass('hidden')
                 }
 
                 if(response.status == 'OK') {

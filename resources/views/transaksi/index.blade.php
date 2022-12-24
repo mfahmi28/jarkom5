@@ -101,7 +101,6 @@
                                     <i class="mdi mdi-arrow-down-bold-circle text-sm mr-1"></i> {{ $transaction->status_name }}
                                 </span>
                             @endif
-                        
                         </td>
                         <td class="py-4 px-6 text-center">
                             <i onclick="showTransactionDetail({{ $transaction->id }})" class="mdi mdi-file-document text-lg cursor-pointer hover:opacity-75 text-secondary"></i>
@@ -181,15 +180,34 @@
             `;
         };
 
-        const listProdukTemplate = (name, qty, bgColor) => {
+        const listProdukTemplate = (name, qty, bgColor, trxProdukId) => {
             return `
                 <tr class="${bgColor}">
                     <td class="py-4 px-6">${name}</td>
                     <td class="py-4 px-6">${qty}</td>
+                    <td class="py-4 px-6 retur-field">
+                        <input type="hidden" class="trx-produk-id" value="${trxProdukId}">
+                        <input type="number" class="qty-retur text-sm font-semibold p-3 bg-gray-50 rounded-lg border border-secondary" placeholder="0" min="0" max="${qty}" value="0">
+                    </td>
                 </tr>`;
         }
 
         const applyTransaksi = (id, action) => {
+            let modal = $('#detailModal'),
+                produkReturList = []
+            
+            if(action == 'recieve') {
+                modal.find('#detail_list_produks .retur-field').each(function() {
+                    let trxProdukId = $(this).find('.trx-produk-id').val(),
+                        qtyRetur = $(this).find('.qty-retur').val()
+
+                    produkReturList.push({
+                        transaksi_produk_id: trxProdukId,
+                        qty_retur: qtyRetur != '' ? qtyRetur : 0
+                    })
+                })
+            }
+
             showLoadingScreen(true)
 
             $.ajax({
@@ -197,6 +215,7 @@
                 url: `/transaksi/${id}/${action}`,
                 data: {
                     _token: '{{ csrf_token() }}',
+                    produk_retur_list: produkReturList
                 },
                 success: function(response) {
                     showLoadingScreen(false)

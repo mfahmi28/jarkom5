@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Models\Supplier;
@@ -9,6 +10,8 @@ use App\Models\User;
 use App\Models\Cabang;
 use App\Models\Produk;
 use App\Models\Transaksi;
+use App\Models\TransaksiProduk;
+use App\Models\TransaksiProdukLog;
 use DateTime;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -174,21 +177,68 @@ class TransaksiController extends Controller
         ]);
     }
 
-    public function recieve($id)
+    public function recieve(Request $request, $id)
     {
         $user = Auth::user();
 
-        $transaksi = Transaksi::find($id);
-        $transaksi->update([
-            'status' => 4,
-            'reciever_id' => $user->id,
-            'recieved_at' => now()->toDateTimeString()
-        ]);
+        DB::beginTransaction();
+        try {
+            $transaksi = Transaksi::find($id);
+            $transaksi->update([
+                'status' => 4,
+                'reciever_id' => $user->id,
+                'recieved_at' => now()->toDateTimeString()
+            ]);
+            
+            $transaksiProdukLogInsert = [];
+            foreach($request->produk_retur_list as $produkRetur) {
+                $transaksiProduk = TransaksiProduk::where('id', $produkRetur['transaksi_produk_id'])->first();
 
-        return response()->json([
-            'status' => 'OK',
-            'message' => 'Berhasil Mengubah Data!'
-        ]);
+                if($produkRetur['qty_retur'] > 0) {
+                    $qtyRetur = $produkRetur['qty_retur'];
+                    if($qtyRetur > $transaksiProduk->qty) {
+                        $qtyRetur = $transaksiProduk->qty;
+                    }
+
+                    $transaksiProdukLogInsert[] = [
+                        'transaksi_produk_id' => $transaksiProduk->id,
+                        'qty' => $transaksiProduk->qty-$qtyRetur,
+                        'status' => 'STOK',
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ];
+
+                    $transaksiProdukLogInsert[] = [
+                        'transaksi_produk_id' => $transaksiProduk->id,
+                        'qty' => $qtyRetur,
+                        'status' => 'RETUR',
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ];
+                } else {
+                    $transaksiProdukLogInsert[] = [
+                        'transaksi_produk_id' => $transaksiProduk->id,
+                        'qty' => $transaksiProduk->qty,
+                        'status' => 'STOK',
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ];
+                }
+            }
+
+            TransaksiProdukLog::insert($transaksiProdukLogInsert);
+            DB::commit();
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Berhasil Mengubah Data!'
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Gagal Mengubah Data!'
+            ]);
+        }
     }
 
     public function delete($id)
