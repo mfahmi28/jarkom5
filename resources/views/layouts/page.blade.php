@@ -9,11 +9,47 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('css/materialdesignicons.min.css') }}">
-        <link rel="stylesheet" href="{{asset('plugins/select2/select2.min.css')}}"/>
+        <link rel="stylesheet" href="{{ asset('plugins/select2/select2.min.css') }}"/>
 
         <style>
             html, body {
                 min-height: 100vh;
+            }
+
+            .select2-container {
+                width: 100% !important;
+            }
+
+            .select2-container .select2-selection--single {
+                height: 44px;
+                background: #f9fafb;
+                border: unset;
+                border-radius: 0.5em;
+            }
+
+            .select2-container--default .select2-selection--single .select2-selection__rendered {
+                line-height: 44px;
+                padding-left: 12px;
+                font-size: 14px;
+                color: #000;
+                font-weight: 600;
+            }
+
+            .select2-container--default .select2-selection--single .select2-selection__arrow {
+                height: 44px;
+                top: 0;
+                right: 0;
+                margin-right: 12px;
+            }
+
+            .select2-container--default .select2-selection--single .select2-selection__placeholder {
+                color: #6b7280;
+            }
+
+            .select2-container--open .select2-dropdown--below {
+                border-top: 1px solid #aaa;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
             }
         </style>
 
@@ -36,14 +72,14 @@
                 <div id="dropdown" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700">
                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefault">
                         <li>
-                            <a href="{{ route("logout") }}" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign out</a>
+                            <a href="{{ route('logout') }}" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign out</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <div class="md:mx-40 mx-3 my-10">
+        <div class="md:mx-40 mx-3 py-10">
             @yield('content')
         </div>
 
@@ -55,7 +91,7 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/jquery-3.6.1.min.js') }}"></script>
     <script src="{{ asset('js/flowbite.js') }}"></script>
-    <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
+    <script src="{{ asset('plugins/select2/select2.full.min.js') }}"></script>
 
     <script>
         const showLoadingScreen = (isShow=false) => {

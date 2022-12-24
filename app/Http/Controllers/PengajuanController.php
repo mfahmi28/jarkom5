@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Pengajuan;
 use App\Models\PengajuanProduk;
 use App\Models\Produk;
 use App\Models\Cabang;
+use App\Models\Transaksi;
+use App\Models\TransaksiProduk;
+use App\Models\TransaksiProdukLog;
 
 class PengajuanController extends Controller
 {
@@ -17,6 +21,12 @@ class PengajuanController extends Controller
         $userCabangId = Auth::user()->cabang_id;
         $produkList = Produk::select('id', 'kode', 'nama')->orderBy('nama', 'ASC')->get();
         $cabangList = Cabang::select('id', 'kode', 'nama')->orderBy('nama', 'ASC')->get();
+        $transaksiKodeReturList = TransaksiProdukLog::leftJoin('transaksi_produk', 'transaksi_produk.id', 'transaksi_produk_log.transaksi_produk_id')
+            ->leftJoin('transaksi', 'transaksi.id', 'transaksi_produk.transaksi_id')
+            ->where('transaksi_produk_log.status', 'RETUR')
+            ->groupBy('transaksi.order_code')
+            ->pluck('transaksi.order_code')
+            ->toArray();
 
         $fetchPengajuan = Pengajuan::select([
                 'pengajuan.kode',
@@ -50,7 +60,7 @@ class PengajuanController extends Controller
             ];
         }
 
-        return view('pengajuan.index', compact('produkList', 'cabangList', 'pengajuanList', 'pagination'));
+        return view('pengajuan.index', compact('produkList', 'cabangList', 'pengajuanList', 'transaksiKodeReturList', 'pagination'));
     }
 
     public function getPengajuanDetail(Request $request)
@@ -108,25 +118,59 @@ class PengajuanController extends Controller
 
     public function addPengajuan(Request $request)
     {
-        $request->validate([
+        $validates = [
+            'tipe' => 'required',
             'tanggal' => 'required',
-            'cabang_id' => 'required',
             'produk_list' => 'required|array'
-        ]);
+        ];
+
+        if($request->tipe == 'ORDER') {
+            $validates['cabang_id'] = 'required';
+        } else if($request->tipe == 'RETUR') {
+            $validates['transaksi_kode'] = 'required';
+        }
+
+        $request->validate($validates);
 
         DB::beginTransaction();
         try {
             $pengajuanKode = 'PNG-'.date('ymd').rand(0000, 9999);
+            $tipe = $request->tipe;
+            $tanggal = $request->tanggal;
+            $cabangId = $request->cabang_id;
+            $transaksiKodeRef = null;
             $produkList = [];
+
+            if($request->tipe == 'RETUR') {
+                $transaksiDetail = Transaksi::where('order_code', $request->transaksi_kode)->first();
+                if(empty($transaksiDetail)) {
+                    return response()->json([
+                        'status' => 'FAIL',
+                        'message' => 'Transaksi Sebelumnya Tidak Ditemukan!'
+                    ]);
+                }
+
+                $transaksiKodeRef = $transaksiDetail->order_code;
+                $cabangId = $transaksiDetail->cabang_id;
+
+                foreach($request->produk_list as $produk) {
+                    TransaksiProdukLog::leftJoin('transaksi_produk', 'transaksi_produk.id', 'transaksi_produk_log.transaksi_produk_id')
+                        ->where('transaksi_produk.transaksi_id', $transaksiDetail->id)
+                        ->where('transaksi_produk.produk_id', $produk['produk_id'])
+                        ->where('transaksi_produk_log.status', 'RETUR')
+                        ->update(['status' => 'RETUR_PROSES']);
+                }
+            }
 
             Pengajuan::insert([
                     'kode' => $pengajuanKode,
-                    'tanggal' => $request->tanggal,
-                    'tipe' => 'ORDER',
+                    'tanggal' => $tanggal,
+                    'tipe' => $tipe,
                     'user_created_id' => Auth::user()->id,
-                    'cabang_id' => $request->cabang_id,
+                    'cabang_id' => $cabangId,
                     'keterangan' => !empty($request->keterangan) ? $request->keterangan : null,
                     'status' => 'PENDING',
+                    'order_code_ref' => $transaksiKodeRef,
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
                 ]);
@@ -161,15 +205,81 @@ class PengajuanController extends Controller
             'status' => 'required'
         ]);
 
-        $updatePengajuan = Pengajuan::where('kode', $request->kode)->update([
-                'status' => $request->status,
-                'updated_at' => date('Y-m-d H:i:s')
+        $pengajuanDetail = Pengajuan::where('kode', $request->kode)->first();
+        if(empty($pengajuanDetail)) {
+            return response()->json([
+                'status' => 'FAIL',
+                'message' => 'Pengajuan Tidak Ditemukan!'
             ]);
+        }
 
-        return response()->json([
-            'status' => $updatePengajuan ? 'OK' : 'FAIL',
-            'message' => $updatePengajuan ? '' : 'Gagal Mengubah Data!'
-        ]);
+        $pengajuanProdukList = PengajuanProduk::where('pengajuan_kode', $pengajuanDetail->kode)->get();
+
+        DB::beginTransaction();
+        try {
+            $updatePengajuan = Pengajuan::where('kode', $request->kode)->update([
+                    'status' => $request->status,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+
+            if($pengajuanDetail->tipe == 'RETUR') {
+                $transaksiDetail = Transaksi::where('order_code', $pengajuanDetail->order_code_ref)->first();
+                if(empty($transaksiDetail)) {
+                    return response()->json([
+                        'status' => 'FAIL',
+                        'message' => 'Transaksi Sebelumnya Tidak Ditemukan!'
+                    ]);
+                }
+
+                if($request->status == 'APPROVED') {
+                    $transaksi = Transaksi::create([
+                        'status' => 0,
+                        'order_code' => 'TRX-'.date('ymd').rand(0000, 9999),
+                        'tipe' => 'RETUR',
+                        'supplier_id' => $transaksiDetail->supplier_id,
+                        'cabang_id' => $transaksiDetail->cabang_id,
+                        'maker_id' => Auth::user()->id,
+                        'tax' => 0,
+                        'sort_subtotal' => 0,
+                        'estimated_date' => Carbon::now()->addDays(Transaksi::EXPIRED_DAYS)->toDateString(),
+                        'expired_date' => Carbon::now()->addDays(Transaksi::EXPIRED_DAYS)->toDateString(),
+                        'order_code_ref' => $pengajuanDetail->order_code_ref,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+    
+                    foreach($pengajuanProdukList as $pengajuanProduk) {
+                        TransaksiProduk::insert([
+                            'transaksi_id' => $transaksi->id,
+                            'produk_id' => $pengajuanProduk->produk_id,
+                            'qty' => $pengajuanProduk->qty,
+                            'locked_price' => 0,
+                            'locked_total' => 0
+                        ]);
+                    }
+                } else {
+                    foreach($pengajuanProdukList as $pengajuanProduk) {
+                        TransaksiProdukLog::leftJoin('transaksi_produk', 'transaksi_produk.id', 'transaksi_produk_log.transaksi_produk_id')
+                            ->where('transaksi_produk.transaksi_id', $transaksiDetail->id)
+                            ->where('transaksi_produk.produk_id', $pengajuanProduk->produk_id)
+                            ->where('transaksi_produk_log.status', 'RETUR_PROSES')
+                            ->update(['status' => 'RETUR']);
+                    }
+                }
+            }
+
+            DB::commit();
+            return response()->json([
+                'status' => 'OK',
+                'message' => ''
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'FAIL',
+                'message' => 'Gagal Mengubah Data!'
+            ]);
+        }
     }
 
     public function deletePengajuan(Request $request)
@@ -192,5 +302,27 @@ class PengajuanController extends Controller
                 'message' => 'Gagal Menghapus Data'
             ]);
         }
+    }
+
+    public function getProdukReturList(Request $request)
+    {
+        $request->validate([
+            'transaksi_kode' => 'required'
+        ]);
+
+        $produkList = TransaksiProdukLog::select([
+                'transaksi_produk.produk_id AS id',
+                'transaksi_produk_log.qty'
+            ])
+            ->leftJoin('transaksi_produk', 'transaksi_produk.id', 'transaksi_produk_log.transaksi_produk_id')
+            ->leftJoin('transaksi', 'transaksi.id', 'transaksi_produk.transaksi_id')
+            ->where('transaksi.order_code', $request->transaksi_kode)
+            ->where('transaksi_produk_log.status', 'RETUR')
+            ->get();
+
+        return response()->json([
+            'status' => 'OK',
+            'produk_list' => $produkList
+        ]);
     }
 }

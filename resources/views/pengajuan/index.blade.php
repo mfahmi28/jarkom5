@@ -86,12 +86,19 @@
                     </button>
                 </div>
                 <div class="modal-form">
-                    <div class="p-6 space-y-6">
+                    <div class="px-6 pt-6">
+                        <div class="mb-6">
+                            <label class="text-sm font-semibold mb-3">Tipe Pengajuan<span class="text-red-600">*</span></labellabel>
+                            <select class="tipe-pengajuan w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0">
+                                <option value="ORDER" selected>Order</option>
+                                <option value="RETUR">Retur</option>
+                            </select>
+                        </div>
                         <div class="mb-6">
                             <label class="text-sm font-semibold mb-3">Tanggal Pengajuan<span class="text-red-600">*</span></label>
                             <input type="date" class="tanggal w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Pilih tanggal">
                         </div>
-                        <div class="mb-6">
+                        <div class="mb-6 order-section">
                             <label class="text-sm font-semibold mb-3">Cabang<span class="text-red-600">*</span></labellabel>
                             <select class="cabang-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" {{ !empty(Auth::user()->cabang_id) ? 'disabled' : '' }}>
                                 <option value="" selected disabled>-</option>
@@ -100,12 +107,21 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="mb-6 retur-section hidden">
+                            <label class="text-sm font-semibold mb-3">Transaksi Kode<span class="text-red-600">*</span></labellabel>
+                            <select class="transaksi-kode w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0 select2">
+                                <option value="" selected disabled></option>
+                                @foreach($transaksiKodeReturList as $transaksiKodeRetur)
+                                <option value="{{ $transaksiKodeRetur }}">{{ $transaksiKodeRetur }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="mb-6">
                             <label class="text-sm font-semibold mb-3">Keterangan</label>
                             <textarea class="keterangan w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="Masukan keterangan" rows="2"></textarea>
                         </div>
                     </div>
-                    <div class="px-6 pb-6">
+                    <div class="order-section px-6 pb-6">
                         <label class="text-base font-semibold">Daftar Produk</label>
                         <hr class="mt-1 mb-4" style="">
                         <div id="produkFields">
@@ -129,6 +145,13 @@
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="retur-section px-6 pb-6 hidden">
+                        <label class="text-base font-semibold">Daftar Produk</label>
+                        <hr class="mt-1 mb-4" style="">
+                        <div id="produkReturFields">
+                            <span class="text-gray-500 text-sm">Belum Ada Produk Retur</span>
                         </div>
                     </div>
                 </div>
@@ -240,6 +263,29 @@
             }
         }
 
+        $('.select2').select2({
+            placeholder: 'Pilih Transaksi Kode'
+        })
+
+        $('#addModal .tipe-pengajuan').on('change', function() {
+            let modal = $('#addModal'),
+                tipe = $(this).val()
+
+            if(tipe == 'ORDER') {
+                modal.find('.order-section').removeClass('hidden')
+                modal.find('.retur-section').addClass('hidden')
+            } else if(tipe == 'RETUR') {
+                modal.find('.order-section').addClass('hidden')
+                modal.find('.retur-section').removeClass('hidden')
+            }
+        })
+
+        $('#addModal .transaksi-kode').on('change', function() {
+            let transaksiKode = $(this).val()
+
+            loadProdukReturList(transaksiKode)
+        })
+
         const addProdukField = () => {
             produkFieldIdx += 1
 
@@ -273,9 +319,12 @@
 
         const addPengajuan = () => {
             let modal = $('#addModal'),
+                tipe = modal.find('.tipe-pengajuan').val(),
+                transaksiKode = modal.find('.transaksi-kode').val(),
                 tanggal = modal.find('.tanggal').val(),
                 cabangId = modal.find('.cabang-id').val(),
                 keterangan = modal.find('.keterangan').val(),
+                produkFields = '',
                 produkList = [],
                 isValid = true,
                 errorMessage = ''
@@ -286,7 +335,13 @@
                 return alert('Harap Memilih Cabang!')
             }
 
-            modal.find('#produkFields').children().each(function() {
+            if(tipe == 'ORDER') {
+                produkFields = '#produkFields'
+            } else if(tipe == 'RETUR') {
+                produkFields = '#produkReturFields'
+            }
+
+            modal.find(produkFields).children().each(function() {
                 let produkId = $(this).find('.produk-id').val() ?? '',
                     qty = $(this).find('.qty').val()
 
@@ -319,7 +374,9 @@
                 url: '',
                 data: {
                     _token: '{{ csrf_token() }}',
+                    tipe: tipe,
                     tanggal: tanggal,
+                    transaksi_kode: transaksiKode,
                     cabang_id: cabangId,
                     keterangan: keterangan,
                     produk_list: produkList
@@ -450,9 +507,9 @@
                 messageConfirm = 'Yakin Menolak Pengajuan Ini?'
             }
 
-            showLoadingScreen(true)
-
             if(confirm(messageConfirm)) {
+                showLoadingScreen(true)
+
                 $.ajax({
                     type: 'PUT',
                     url: '/pengajuan/status/update',
@@ -477,6 +534,54 @@
                     }
                 })
             }
+        }
+
+        const loadProdukReturList = (transaksiKode) => {
+            let modal = $('#addModal')
+
+            showLoadingScreen(true)
+
+            $.ajax({
+                type: 'GET',
+                url: '/pengajuan/produk/retur/list',
+                data: {
+                    transaksi_kode: transaksiKode
+                },
+                success: function(response) {
+                    showLoadingScreen(false)
+
+                    modal.find('#produkReturFields').html('')
+
+                    if(response.status == 'OK') {
+                        response.produk_list.forEach((produk) => {
+                            modal.find('#produkReturFields').append(`
+                                <div class="grid grid-cols-12 gap-x-4 items-end mb-6">
+                                    <div class="col-span-9">
+                                        <label class="text-sm font-semibold mb-3">Produk<span class="text-red-600">*</span></label>
+                                        <select class="produk-id w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" disabled>
+                                            <option value="" selected disabled>-</option>
+                                            @foreach($produkList as $produk)
+                                            <option value="{{ $produk->id }}" ${produk.id == "{{ $produk->id }}" ? 'selected' : ''}>[{{ $produk->kode }}] {{ $produk->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-span-3">
+                                        <label class="text-sm font-semibold mb-3">Qty<span class="text-red-600">*</span></label>
+                                        <input type="number" class="qty w-full text-sm font-semibold p-3 bg-gray-50 rounded-lg border-0" placeholder="0" value="${produk.qty}" disabled>
+                                    </div>
+                                </div>
+                            `)
+                        })
+                    } else {
+                        alert(response.message)
+                    }
+                },
+                error: function() {
+                    showLoadingScreen(false)
+
+                    alert('Terjadi Kesalahan! Silahkan Ulangi')
+                }
+            })
         }
     </script>
 @endsection

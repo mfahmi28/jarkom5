@@ -20,6 +20,12 @@
                         <label id="detail_order_code" class="text-sm font-semibold">ORD-0001</label>
                     </div>
                     <div class="col-span-5">
+                        <label class="text-sm font-bold">Tipe</label>
+                    </div>
+                    <div class="col-span-7">
+                        <label id="detail_tipe" class="text-sm font-semibold">ORD-0001</label>
+                    </div>
+                    <div class="col-span-5">
                         <label class="text-sm font-bold">Supplier</label>
                     </div>
                     <div class="col-span-7">

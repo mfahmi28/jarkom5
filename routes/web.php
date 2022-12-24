@@ -11,6 +11,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\TransaksiProdukLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,10 +40,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/beranda', function() {
         return view('beranda.index');
     });
-
-    // Route::get('/transaksi', function() {
-    //     return view('transaksi.index');
-    // });
 
     Route::prefix('transaksi')->middleware(['role:admin|md|admin-cabang|supplier'])->group(function () {
         Route::get('/', [TransaksiController::class, 'index']);
@@ -93,4 +90,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/pengajuan', [PengajuanController::class, 'addPengajuan']);
     Route::put('/pengajuan/status/update', [PengajuanController::class, 'confirmPengajuan']);
     Route::delete('/pengajuan', [PengajuanController::class, 'deletePengajuan']);
+    Route::get('/pengajuan/produk/retur/list', [PengajuanController::class, 'getProdukReturList']);
+
+    Route::get('/transaksi-produk/log', [TransaksiProdukLogController::class, 'index']);
 });

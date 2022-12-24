@@ -104,6 +104,7 @@ class TransaksiController extends Controller
             'status' => 0,
             // 'order_code' => $request->input('order_code'),
             'order_code' => 'TRX-'.date('ymd').rand(0000, 9999),
+            'tipe' => 'ORDER',
             'supplier_id' => $request->input('supplier_id'),
             'cabang_id' => $request->input('cabang_id'),
             'maker_id' => $user->id,
@@ -154,13 +155,33 @@ class TransaksiController extends Controller
 
     public function reject($id)
     {
-        $transaksi = Transaksi::find($id);
-        $transaksi->update(['status' => 2]);
+        DB::beginTransaction();
+        try {
+            $transaksi = Transaksi::find($id);
+            $transaksi->update(['status' => 2]);
 
-        return response()->json([
-            'status' => 'OK',
-            'message' => 'Berhasil Mengubah Data!'
-        ]);
+            if($transaksi->tipe == 'RETUR') {
+                $transaksiDetail = Transaksi::where('order_code', $transaksi->order_code_ref)->first();
+                $transaksiProdukList = TransaksiProduk::where('transaksi_id', $transaksiDetail->id)->get();
+                foreach($transaksiProdukList as $transaksiProduk) {
+                    TransaksiProdukLog::where('transaksi_produk_id', $transaksiProduk->id)
+                        ->where('status', 'RETUR_PROSES')
+                        ->update(['status' => 'RETUR']);
+                }
+            }
+
+            DB::commit();
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Berhasil Mengubah Data!'
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'FAIL',
+                'message' => 'Gagal Mengubah Data!'
+            ]);
+        }
     }
 
     public function ship($id)
@@ -190,43 +211,54 @@ class TransaksiController extends Controller
                 'recieved_at' => now()->toDateTimeString()
             ]);
             
-            $transaksiProdukLogInsert = [];
-            foreach($request->produk_retur_list as $produkRetur) {
-                $transaksiProduk = TransaksiProduk::where('id', $produkRetur['transaksi_produk_id'])->first();
-
-                if($produkRetur['qty_retur'] > 0) {
-                    $qtyRetur = $produkRetur['qty_retur'];
-                    if($qtyRetur > $transaksiProduk->qty) {
-                        $qtyRetur = $transaksiProduk->qty;
+            if($transaksi->tipe == 'ORDER') {
+                $transaksiProdukLogInsert = [];
+                foreach($request->produk_retur_list as $produkRetur) {
+                    $transaksiProduk = TransaksiProduk::where('id', $produkRetur['transaksi_produk_id'])->first();
+    
+                    if($produkRetur['qty_retur'] > 0) {
+                        $qtyRetur = $produkRetur['qty_retur'];
+                        if($qtyRetur > $transaksiProduk->qty) {
+                            $qtyRetur = $transaksiProduk->qty;
+                        }
+    
+                        $transaksiProdukLogInsert[] = [
+                            'transaksi_produk_id' => $transaksiProduk->id,
+                            'qty' => $transaksiProduk->qty-$qtyRetur,
+                            'status' => 'STOK',
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ];
+    
+                        $transaksiProdukLogInsert[] = [
+                            'transaksi_produk_id' => $transaksiProduk->id,
+                            'qty' => $qtyRetur,
+                            'status' => 'RETUR',
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ];
+                    } else {
+                        $transaksiProdukLogInsert[] = [
+                            'transaksi_produk_id' => $transaksiProduk->id,
+                            'qty' => $transaksiProduk->qty,
+                            'status' => 'STOK',
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ];
                     }
-
-                    $transaksiProdukLogInsert[] = [
-                        'transaksi_produk_id' => $transaksiProduk->id,
-                        'qty' => $transaksiProduk->qty-$qtyRetur,
-                        'status' => 'STOK',
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'updated_at' => date('Y-m-d H:i:s')
-                    ];
-
-                    $transaksiProdukLogInsert[] = [
-                        'transaksi_produk_id' => $transaksiProduk->id,
-                        'qty' => $qtyRetur,
-                        'status' => 'RETUR',
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'updated_at' => date('Y-m-d H:i:s')
-                    ];
-                } else {
-                    $transaksiProdukLogInsert[] = [
-                        'transaksi_produk_id' => $transaksiProduk->id,
-                        'qty' => $transaksiProduk->qty,
-                        'status' => 'STOK',
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'updated_at' => date('Y-m-d H:i:s')
-                    ];
+                }
+    
+                TransaksiProdukLog::insert($transaksiProdukLogInsert);
+            } else if($transaksi->tipe == 'RETUR') {
+                $transaksiDetail = Transaksi::where('order_code', $transaksi->order_code_ref)->first();
+                $transaksiProdukList = TransaksiProduk::where('transaksi_id', $transaksiDetail->id)->get();
+                foreach($transaksiProdukList as $transaksiProduk) {
+                    TransaksiProdukLog::where('transaksi_produk_id', $transaksiProduk->id)
+                        ->where('status', 'RETUR_PROSES')
+                        ->update(['status' => 'RETUR_STOK']);
                 }
             }
 
-            TransaksiProdukLog::insert($transaksiProdukLogInsert);
             DB::commit();
             return response()->json([
                 'status' => 'OK',

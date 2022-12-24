@@ -61,7 +61,7 @@ $(function () {
             placeholder: "Pilih supplier",
         });
     }
-
+    
     window.showTransactionDetail = (transaksi_id) => {
         showLoadingScreen(true)
 
@@ -76,6 +76,7 @@ $(function () {
 
                 $("#detail_apply").attr('data-transaksi_id', response.transaksi_detail.id);
                 $("#detail_order_code").text(response.transaksi_detail.order_code);
+                $("#detail_tipe").text(response.transaksi_detail.tipe);
                 $("#detail_supplier").text(response.transaksi_detail.supplier);
                 $("#detail_estimated_date").text(response.transaksi_detail.estimated_date);
                 $("#detail_supplier").text(response.transaksi_detail.supplier);
@@ -106,7 +107,13 @@ $(function () {
                 }
 
                 if(response.transaksi_detail.status == 3) { // SHIPPING
-                    $('.btn-receive, .retur-field').removeClass('hidden')
+                    $('.btn-receive').removeClass('hidden')
+
+                    if(response.transaksi_detail.tipe != 'RETUR') {
+                        $('.retur-field').removeClass('hidden')
+                    } else {
+                        $('.retur-field').addClass('hidden')
+                    }
                 } else {
                     $('.btn-receive, .retur-field').addClass('hidden')
                 }

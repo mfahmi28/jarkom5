@@ -28,6 +28,7 @@ class Transaksi extends Model
     protected $fillable = [
         'status',
         'order_code',
+        'tipe',
         'supplier_id',
         'cabang_id',
         'maker_id',
@@ -38,6 +39,7 @@ class Transaksi extends Model
         'estimated_date',
         'expired_date',
         'recieved_at',
+        'order_code_ref',
         'created_at',
         'updated_at'
     ];
